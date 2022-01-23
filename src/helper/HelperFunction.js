@@ -1,8 +1,8 @@
 
 
 const HelperFuntion = () => {
-    //const url='https://mvps.almaks.rs:3001/'
-    const url='http://localhost:3001/'
+    const url='https://mvps.almaks.rs:3001/'
+    //const url='http://localhost:3001/'
 
     const KonverterVremena = (vreme) => {
         const zadnjeJavljanje = new Date(vreme * 1000)
