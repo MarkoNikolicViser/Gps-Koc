@@ -5,6 +5,8 @@ import Mapa from "./components/MapaLegenda/Mapa";
 import {TContext} from './components/context';
 import Login from './components/Login/Login'
 import Profile from "./components/Profile/Profile";
+import Legenda from "./components/MapaLegenda/Legenda";
+import Kontakti from "./components/Kontakti/Kontakti";
 const App = () => {
 
   const [izbor, setIzbor] = useState({ m: true, k: false, o: false, n: false, l: false })
@@ -36,18 +38,13 @@ const App = () => {
         </nav>
         {izbor.m ? (<div style={{ background: '#588c7e', height: '97%', borderRadius: '0 3rem 0 0' }}>
           <div style={{ display: 'flex',alignItems:'center',justifyContent:'center',flexDirection: 'column', height: '100%', width: 'inherit' }} className='monitoring'>
-            <div>
-              legenda boja
-            </div>
-            <div style={{width:'80%',height:'50%'}}>
+            <div style={{width:'95%',height:'100%', paddingTop:'1%'}}>
               <Mapa />
-            </div>
-            <div>
-              Legenda
+              <Legenda/>
             </div>
           </div>
         </div>) : null}
-        {izbor.k ? (<div style={{ background: '#ffcc5c', height: '97%', borderRadius: '0 3rem 0 0' }} className='kontakti'>Kontakti</div>) : null}
+        {izbor.k ? (<div style={{ background: '#ffcc5c', height: '97%', borderRadius: '0 3rem 0 0',maxWidth:'auto', overflow:'scroll' }} className='kontakti'><Kontakti/></div>) : null}
         {izbor.o ? (<div style={{ background: '#f2ae72', height: '97%', borderRadius: '0 3rem 0 0' }} className='obuke'>Obuke</div>) : null}
         {izbor.n ? (<div style={{ background: '#d96459', height: '97%', borderRadius: '0 3rem 0 0' }} className='nalozi'>Korisnicki nalozi</div>) : null}
         {izbor.l ? (<div style={{ background: '#96ceb4', height: '97%', borderRadius: '0 3rem 0 0' }} className='nalozi'><Profile/></div>) : null}

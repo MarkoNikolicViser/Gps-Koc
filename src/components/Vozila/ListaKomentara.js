@@ -4,7 +4,7 @@ import { TContext } from '../context'
 
 const ListaKomentara = ({ vozila, setVozila, info, setBazaInfoNew, bazaInfo, vozilo }) => {
     ///////////////////////////////
-    const { korisnik } = useContext(TContext)
+    const { korisnik,url } = useContext(TContext)
     const [korisnikValue, setKorisnikValue] = korisnik
     //////////////////////////////
 
@@ -14,7 +14,7 @@ const ListaKomentara = ({ vozila, setVozila, info, setBazaInfoNew, bazaInfo, voz
 
     const VratiVlasnikaKomentara = async () => {
         const parametri = { Id: info.korisnik };
-        const data = await (await fetch('https://mvps.almaks.rs:3001/user/id', {
+        const data = await (await fetch(`${url}user/id`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ const ListaKomentara = ({ vozila, setVozila, info, setBazaInfoNew, bazaInfo, voz
         let result = window.confirm(`Da li želite da obrišete komentar '${info.komentar}'`);
         if (!result)
             return null
-        const data = await (await fetch(`https://mvps.almaks.rs:3001/komentar/delete/${info.Id}`, {
+        const data = await (await fetch(`${url}komentar/delete/${info.Id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

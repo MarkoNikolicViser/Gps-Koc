@@ -6,7 +6,7 @@ const Login = () => {
 
     const PassRef = useRef(null)
 
-    const { loginToken, korisnik } = useContext(TContext)
+    const { loginToken, korisnik, url } = useContext(TContext)
     const [loginTokenValue, setLoginTokenValue] = loginToken
     const [korisnikValue, setKorisnikValue] = korisnik
     const [mail, setMail] = useState('')
@@ -17,7 +17,7 @@ const Login = () => {
     const PosaljiUpit = async (e) => {
         e.preventDefault()
         const parametri = { mail: mail, pass: pass };
-        const data = await (await fetch('https://mvps.almaks.rs:3001/login', {
+        const data = await (await fetch(`${url}login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

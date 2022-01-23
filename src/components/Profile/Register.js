@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import '../Login/Login.css'
-
+import { TContext } from "../context";
 const Register = () => {
-
+    const {url}=useContext(TContext)
     const PassRef = useRef(null)
     
     const [nalozi,setNalozi]=useState([])
@@ -15,7 +15,7 @@ const Register = () => {
 
 const ProveraMaila=async()=>{
     const parametri = { mail: mail};
-    const data = await (await fetch('https://mvps.almaks.rs:3001/mail', {
+    const data = await (await fetch(`${url}mail`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ const BrisanjeNaloga=async(Id,mail)=>{
     let result = window.confirm(`Da li želite da obrišete nalog ${mail}?`);
     if(!result)
     return null
-    const data = await (await fetch(`https://mvps.almaks.rs:3001/nalozi/delete/${Id}`, {
+    const data = await (await fetch(`${url}nalozi/delete/${Id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const BrisanjeNaloga=async(Id,mail)=>{
 
 
     const FetchNaloge=async()=>{
-        const data=await(await fetch('https://mvps.almaks.rs:3001/nalozi')).json()
+        const data=await(await fetch(`${url}nalozi`)).json()
         setNalozi(data)
     }
 useEffect(() => {
@@ -64,7 +64,7 @@ useEffect(() => {
         }
 
         const parametri = { mail: mail, pass: pass, pravo: pravo };
-        const data = await (await fetch('https://mvps.almaks.rs:3001/register', {
+        const data = await (await fetch(`${url}register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

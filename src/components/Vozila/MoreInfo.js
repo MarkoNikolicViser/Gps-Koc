@@ -5,7 +5,7 @@ import ListaKomentara from "./ListaKomentara";
 
 const MoreInfo = ({vozila,setVozila,vozilo, idVozilo,idUredjaja, nazivUredjaja, lokacija, razlika, vreme, sateliti, x, y, brzinaCan, brzina, kilometraza, kilometrazaCan, senzori, ObojRed, bazaInfo, bazaInfoNew,setBazaInfoNew, broj, granica }) => {
 //////////////////////////////
-const {korisnik}=useContext(TContext)
+const {korisnik,url}=useContext(TContext)
 const [korisnikValue,setKorisnikValue]=korisnik
 /////////////////////////////
     const { Boje, GetInfoVozilo } = HelperFuntion()
@@ -21,11 +21,8 @@ const InsertKomentar=async()=>{
         alert('Morate odabrati boju')
         return null
     }
-    const date=new Date()
-    let mesec=date.getMonth()+1
-    const datum=date.getDate()+' '+mesec+' '+date.getFullYear()
-    const parametri = { idVozilo: idVozilo, komentar:komentar, boja:bojaSelecta, korisnik:korisnikValue.Id, datum:datum};
-    const data = await (await fetch('https://mvps.almaks.rs:3001/komentar/insert', {
+    const parametri = { idVozilo: idVozilo, komentar:komentar, boja:bojaSelecta, korisnik:korisnikValue.Id};
+    const data = await (await fetch(`${url}komentar/insert`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
