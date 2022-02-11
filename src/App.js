@@ -7,6 +7,9 @@ import Login from './components/Login/Login'
 import Profile from "./components/Profile/Profile";
 import Legenda from "./components/MapaLegenda/Legenda";
 import Kontakti from "./components/Kontakti/Kontakti";
+import {ListaObuka} from "./components/Obuke/ListaObuka";
+import { ListaNaloga } from "./components/Nalozi/ListaNaloga";
+
 const App = () => {
 
   const [izbor, setIzbor] = useState({ m: true, k: false, o: false, n: false, l: false })
@@ -28,8 +31,8 @@ const App = () => {
             <li style={{ background: '#588c7e' }} onClick={() => setIzbor(prev => prev = { m: true, k: false, o: false, n: false, l: false })}>Monitoring</li>
             <li style={{ background: '#ffcc5c' }} onClick={() => setIzbor(prev => prev = { m: false, k: true, o: false, n: false, l: false })}>Kontakti</li>
             <li style={{ background: '#f2ae72' }} onClick={() => setIzbor(prev => prev = { m: false, k: false, o: true, n: false, l: false })}>Obuke</li>
-            <li style={{ background: '#d96459' }} onClick={() => setIzbor(prev => prev = { m: false, k: false, o: false, n: true, l: false })}>Korisnicki nalozi</li>
-            {korisnikValue.pravo?(<li style={{ background: '#96ceb4' }} onClick={() => setIzbor(prev => prev = { m: false, k: false, o: false, n: false, l: true })}>Logovan Korisnik</li>):(null)}
+            <li style={{ background: '#5dc8ef' }} onClick={() => setIzbor(prev => prev = { m: false, k: false, o: false, n: true, l: false })}>Nalozi</li>
+            {korisnikValue.pravo?(<li style={{ background: '#96ceb4' }} onClick={() => setIzbor(prev => prev = { m: false, k: false, o: false, n: false, l: true })}>Korisnik</li>):(null)}
           </ul>
           <div style={{display:'flex', justifyContent:'space-evenly',alignItems:'center',width:'30%'}}>
           <h1 style={{textTransform:'capitalize', whiteSpace:'nowrap',textAlign:'center'}}>{korisnikValue.ime}</h1>
@@ -37,16 +40,16 @@ const App = () => {
           </div>
         </nav>
         {izbor.m ? (<div style={{ background: '#588c7e', height: '97%', borderRadius: '0 3rem 0 0' }}>
-          <div style={{ display: 'flex',alignItems:'center',justifyContent:'center',flexDirection: 'column', height: '100%', width: 'inherit' }} className='monitoring'>
+          <div style={{ display: 'flex',alignItems:'center',justifyContent:'center',flexDirection: 'column', height: '100%', width: 'inherit' }}>
             <div style={{width:'95%',height:'100%', paddingTop:'1%'}}>
               <Mapa />
               <Legenda/>
             </div>
           </div>
         </div>) : null}
-        {izbor.k ? (<div style={{ background: '#ffcc5c', height: '97%', borderRadius: '0 3rem 0 0',maxWidth:'auto', overflow:'scroll' }} className='kontakti'><Kontakti/></div>) : null}
-        {izbor.o ? (<div style={{ background: '#f2ae72', height: '97%', borderRadius: '0 3rem 0 0' }} className='obuke'>Obuke</div>) : null}
-        {izbor.n ? (<div style={{ background: '#d96459', height: '97%', borderRadius: '0 3rem 0 0' }} className='nalozi'>Korisnicki nalozi</div>) : null}
+        {izbor.k ? (<div style={{ background: '#ffcc5c', height: '97%', borderRadius: '0 3rem 0 0',maxWidth:'auto', overflow:'scroll' }}><Kontakti/></div>) : null}
+        {izbor.o ? (<div style={{ background: '#f2ae72', height: '97%', borderRadius: '0 3rem 0 0',maxWidth:'auto', overflow:'scroll' }}><ListaObuka/></div>) : null}
+        {izbor.n ? (<div style={{ background: '#5dc8ef', height: '97%', borderRadius: '0 3rem 0 0',maxWidth:'auto', overflow:'scroll' }}><ListaNaloga/></div>) : null}
         {izbor.l ? (<div style={{ background: '#96ceb4', height: '97%', borderRadius: '0 3rem 0 0' }} className='nalozi'><Profile/></div>) : null}
       </div>
     </div>

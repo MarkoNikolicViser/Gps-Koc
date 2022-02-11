@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HelperFuntion from '../../helper/HelperFunction';
 import { theme } from '../../assets/svgs';
+import { LoaderCustom } from '../LoaderCustom';
 
 const Kontakti = () => {
     const [pretragaLegende, setPretragaLegende] = useState('')
@@ -14,6 +15,9 @@ const Kontakti = () => {
     const FilterFirme = data.filter(legend => {
         return legend[0].naziv.toLowerCase().includes(pretragaLegende.toLowerCase())
     })
+    if(!data.length)
+    return <LoaderCustom/>
+
     return <table>
         <thead>
             <tr><th></th><th><input type="text" value={pretragaLegende} onChange={(e) => setPretragaLegende(e.target.value)} placeholder='pretraga' /></th></tr>
@@ -79,7 +83,6 @@ const Row = ({ niz,setData }) => {
         await BrisanjeKontakta(niz.idKontakta, editKontakt.osoba)
         setData(await GetAllFirmeIKontakte())
     }
-
     return <td>{niz.broj && !editOn ? (
         <h1 style={{ whiteSpace: 'nowrap',width:'30rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span>{niz.osoba}</span>

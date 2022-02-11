@@ -29,6 +29,10 @@ const HelperFuntion = () => {
             return { vreme: `pre ${razlika.minutes} minuta ${razlika.seconds} sekundi`, boja: 'green' };
         }
     }
+    const KonverterVremenaIzBaze=(vreme)=>{
+        let vreme2=vreme.replace('T',' ')
+       return vreme2.replace('.000Z','')
+    }
     const Boje = (id) => {
         if (!id)
             return { background: '#FAF9F6' } //belo
@@ -157,6 +161,68 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    return { IspisiRazlikuNejavljanja, Boje, GetInfoVozilo,OsveziElementBaze,GetAllFirmeILokacije,BrisanjeFirmeILokacije,UpdateFirmeILokacije,InsertFirmaILokacija,GetAllFirmeIKontakte,UpdateMailFirme,UpdateKontaktIBroj,BrisanjeKontakta,InsertKontakti }
+    const UpdateObukeDatumIPredavac = async (Id,zakazana,predavac,odrzana,naziv) => {
+        let result = window.confirm(`Da li želite da izmenite zakazan termin/predavaca za firmu ${naziv}?`);
+        if(!result)
+        return null
+        const parametri = { Id:Id, zakazana:zakazana, predavac:predavac, odrzana:odrzana };
+        const data = await (await fetch(`${url}obuke/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametri)
+        })).json();
+        console.log(data)
+    }
+    const GetAllFirmeINaloge=async()=>{
+        const data=await(await fetch(`${url}nalozi/getall`)).json()
+        return data;
+    }
+    const UpdateNalozi= async (idNalozi,platforma,korisnickoIme,lozinka,firma) => {
+        let result = window.confirm(`Da li želite da izmenite podatke naloga firme ${firma}?`);
+        if(!result)
+        return null
+        const parametri = { idNalozi:idNalozi,platforma:platforma,korisnickoIme:korisnickoIme,lozinka:lozinka};
+        const data = await (await fetch(`${url}nalozi/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametri)
+        })).json();
+    }
+    const InsertNalozi = async (idFirme,platforma,korisnickoIme,lozinka) => {
+        if(!korisnickoIme||!lozinka){
+            alert('Popunite polja za korisničko ime i lozinku!')
+            return
+        }
+        const parametri = {idFirme:idFirme,platforma:platforma,korisnickoIme:korisnickoIme,lozinka:lozinka};
+        const data = await (await fetch(`${url}nalozi/insert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametri)
+        })).json();
+    }
+    return { IspisiRazlikuNejavljanja,
+          Boje,
+          GetInfoVozilo,
+          OsveziElementBaze,
+          GetAllFirmeILokacije,
+          BrisanjeFirmeILokacije,
+          UpdateFirmeILokacije,
+          InsertFirmaILokacija,
+          GetAllFirmeIKontakte,
+          UpdateMailFirme,
+          UpdateKontaktIBroj,
+          BrisanjeKontakta,
+          InsertKontakti,
+          KonverterVremenaIzBaze,
+          UpdateObukeDatumIPredavac,
+          GetAllFirmeINaloge,
+          UpdateNalozi,
+          InsertNalozi }
 }
 export default HelperFuntion;

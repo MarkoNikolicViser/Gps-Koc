@@ -1,14 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { css } from "@emotion/react";
-import ClipLoader from "react-spinners/ClipLoader";
 import ElementListe from "./ElementListe";
 import HelperFuntion from "../../helper/HelperFunction";
+import { LoaderCustom } from "../LoaderCustom";
 
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border:7px solid #588c7e;
-`;
+
 /* global wialon */
 
 // utills function
@@ -26,7 +21,6 @@ const ListaVozila = () => {
     const [filtriranaVozila,setFiltriranaVozila]=useState([])
     const [pretraga, setPretraga] = useState('')
     const [duzeOd24, setDuzeOd24] = useState({ svi: true, duze: false })
-    let [color, setColor] = useState("#ffffff");
     const [hasMore, setHesMore] = useState(true)
     const [prikaz, setPrikaz] = useState(11)
     const [prikaz24, setPrikaz24] = useState(20)
@@ -201,7 +195,7 @@ const ListaVozila = () => {
     return (
         <div className="lista">
             {loading && <div style={{ width: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <ClipLoader color={color} loading={loading} css={override} size={150} />
+                <LoaderCustom />
             </div>}
             {!loading && <div style={{ width: '400px' }}>
                 <input value={pretraga} type="text" onChange={(e) => setPretraga(prev => prev = e.target.value)} name="" id="" />

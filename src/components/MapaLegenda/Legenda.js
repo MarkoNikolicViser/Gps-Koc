@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import HelperFuntion from '../../helper/HelperFunction'
+import { LoaderCustom } from '../LoaderCustom'
 
 const Legenda = () => {
     const { GetAllFirmeILokacije,InsertFirmaILokacija } = HelperFuntion()
@@ -23,6 +24,10 @@ const Legenda = () => {
     const FilterFirme=sveFirme.filter(legend=>{
         return legend.naziv.toLowerCase().includes(pretragaLegende.toLowerCase())
       })
+      if(!sveFirme.length)
+      return         <div style={{ width: '100%', height: '50%', background: 'lightGray', marginTop: '1%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity:'0.9' }}>
+      <LoaderCustom/></div>
+  
     return (
         <div style={{ width: '100%', height: '50%', background: 'lightGray', marginTop: '1%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity:'0.9' }}>
             <table style={{ width: '90%',height:'90%'}}>
@@ -33,7 +38,7 @@ const Legenda = () => {
                                 <form onSubmit={InsertFirma} style={{ display: 'flex', flexDirection: 'column', alignItems:'center' }}>
                                     <input value={novaInfo.naziv} onChange={(e)=>setNovaInfo({...novaInfo,naziv:e.target.value})} placeholder='Unesi naziv firme' type="text" />
                                     <input value={novaInfo.lokacija} onChange={(e)=>setNovaInfo({...novaInfo,lokacija:e.target.value})} placeholder='Unesi lokaciju firme' type="text" />
-                                    <button disabled={!novaInfo.naziv||!novaInfo.lokacija} type='submit' style={{padding:'2.5px 5px 2.5px 5px'}}>Sačuvaj novu firmu</button>
+                                    <button disabled={!novaInfo.naziv} type='submit' style={{padding:'2.5px 5px 2.5px 5px'}}>Sačuvaj novu firmu</button>
                                 </form>
                             </th>)}
                         <th style={{background:'gray',width:'5rem'}} onClick={() => setOn(prev => prev = !prev)}><h1 style={on ? { transform: 'rotate(45deg)', color: 'red',fontSize:'2rem' } : { color: 'green',fontSize:'2rem' }}>+</h1></th>
