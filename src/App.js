@@ -9,6 +9,7 @@ import Legenda from "./components/MapaLegenda/Legenda";
 import Kontakti from "./components/Kontakti/Kontakti";
 import {ListaObuka} from "./components/Obuke/ListaObuka";
 import { ListaNaloga } from "./components/Nalozi/ListaNaloga";
+import 'leaflet/dist/leaflet.css';
 
 const App = () => {
 

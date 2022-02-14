@@ -88,8 +88,8 @@ useEffect(() => {
 
 
     return (
-        <div style={{display:'flex', alignItems:'center',justifyContent:'space-evenly'}}>
-            <div style={{ height: '95vh', width: '33.3%', display: 'flex', alignItems: 'center', justifyContent: 'center',textAlign:'center' }}>
+        <div style={{display:'flex', alignItems:'center',justifyContent:'space-evenly',flexDirection:'column', width:'100%',height:'100vh'}}>
+            <div style={{ height: '10vh', width: '33.3%', display: 'flex', alignItems: 'center', justifyContent: 'center',textAlign:'center' }}>
                 <table style={{background:'#FAF9F6'}}>
                     <thead>
                         <tr>
@@ -122,7 +122,7 @@ useEffect(() => {
                     </tbody>
                 </table>
             </div>
-        <div style={{ height: '95vh', width: '33.3%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ height: '85vh', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="login-wrap">
                 <div className="login-html">
                     <input id="tab-1" type="radio" name="tab" className="sign-in" /><label htmlFor="tab-1" className="tab"></label>
