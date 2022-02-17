@@ -27,8 +27,8 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
         wialon.util.Gis.getLocations([{ lon: x, lat: y }], function (code, address) {
             if (code) { msg(wialon.core.Errors.getErrorText(code)); return; }
             setLokacija2(prev => prev = address[0]);
-            if (!address[0].includes('Serbia') && vozilo.raw.$$user_phoneNumber.includes('+381'))
-                setGranica(prev => prev = true)
+            // if (!address[0].includes('Serbia') && vozilo.raw.$$user_phoneNumber.includes('+381'))
+            //     setGranica(prev => prev = true)
         });
     }
     const ObojRed = () => {
@@ -97,13 +97,24 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
         }
         setSenzori(senzori)
     }
+    const NameClick = (callback) => {
+        Lokacija(vozilo.raw.getPosition().x, vozilo.raw.getPosition().y)
+
+        callback(prev => prev =
+        {
+            x: vozilo.raw.getPosition().x,
+            y: vozilo.raw.getPosition().y,
+            ikonica: vozilo.raw.getIconUrl(),
+            tablice: `${vozilo.name} "${lokacija2 ? lokacija2 : '...'}"`
+        })
+    }
     return <>
         {vozilo && <div>
             <div style={ObojRed()} className='row'>
                 <img onClick={MoreInfoFunkcija} src={vozilo.raw.getIconUrl()} alt="" />
                 <div style={{ whiteSpace: 'noWrap', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'center', width: '70%' }}>
                     <div>
-                        <b className='ime' onClick={() => setVoziloInfoValue(prev => prev = { x: vozilo.raw.getPosition().x, y: vozilo.raw.getPosition().y, ikonica: vozilo.raw.getIconUrl(),tablice:vozilo.name })}>{vozilo.name}</b>
+                        <b className='ime' onClick={()=>NameClick(setVoziloInfoValue)}>{vozilo.name}</b>
                         {/* <b className='hover-ime'>{vozilo.name}</b> */}
                     </div>
                     <div>

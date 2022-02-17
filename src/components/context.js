@@ -16,8 +16,8 @@ export const TProvider=(props)=>{
         korisnik:""
     }]);
     const[voziloInfo,setVoziloInfo]=useState({
-        x:20.6011428833,
-        y:44.6703948975,
+        x:20.48622948478398,
+        y:44.79223535978762,
         tablice:'',
         ikonica:''
     })
