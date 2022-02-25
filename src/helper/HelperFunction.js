@@ -1,8 +1,8 @@
 
 
 const HelperFuntion = () => {
-    //const url='https://mvps.almaks.rs:3001/'
-    const url = 'http://localhost:3004/'
+    const url='https://mvps.almaks.rs:3001/'
+    //const url = 'http://localhost:3004/'
     const DanUNedelji = (index) => {
         switch (true) {
             case (index == 0): return 'Nedelja'
