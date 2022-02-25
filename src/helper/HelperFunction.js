@@ -1,9 +1,54 @@
 
 
 const HelperFuntion = () => {
-    const url='https://mvps.almaks.rs:3001/'
-    //const url='http://localhost:3001/'
-
+    //const url='https://mvps.almaks.rs:3001/'
+    const url = 'http://localhost:3004/'
+    const DanUNedelji = (index) => {
+        switch (true) {
+            case (index == 0): return 'Nedelja'
+                break
+            case (index == 1): return 'Ponedeljak'
+                break
+            case (index == 2): return 'Utorak'
+                break
+            case (index == 3): return 'Sreda'
+                break
+            case (index == 4): return 'Čevrtak'
+                break
+            case (index == 5): return 'Petak'
+                break
+            case (index == 6): return 'Subota'
+                break
+        }
+    }
+    const MesecUGodini = (index) => {
+        switch (true) {
+            case (index == 1): return 'Januar'
+                break
+            case (index == 2): return 'Februar'
+                break
+            case (index == 3): return 'Mart'
+                break
+            case (index == 4): return 'April'
+                break
+            case (index == 5): return 'Maj'
+                break
+            case (index == 6): return 'Jun'
+                break
+            case (index == 7): return 'Jul'
+                break
+            case (index == 8): return 'Avgust'
+                break
+            case (index == 9): return 'Septembar'
+                break
+            case (index == 10): return 'Oktobar'
+                break
+            case (index == 11): return 'Novembar'
+                break
+            case (index == 12): return 'Decembar'
+                break
+        }
+    }
     const KonverterVremena = (vreme) => {
         const zadnjeJavljanje = new Date(vreme * 1000)
         const vremeSad = new Date().getTime()
@@ -29,9 +74,20 @@ const HelperFuntion = () => {
             return { vreme: `pre ${razlika.minutes} minuta ${razlika.seconds} sekundi`, boja: 'green' };
         }
     }
-    const KonverterVremenaIzBaze=(vreme)=>{
-        let vreme2=vreme.replace('T',' ')
-       return vreme2.replace('.000Z','')
+    const KonverterVremenaIzBaze = (vreme) => {
+        const vremeZona = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Belgrade' })
+        let vreme2 = vremeZona.replace('T', ' ')
+        return vreme2.replace('.000Z', '')
+    }
+    const KonverzijaVremenaStatistika = (date) => {
+        const DodajNuluJEdnocifrenomMesecu = () => {
+            if (date.getMonth() <= 9)
+                return '-0'
+            else {
+                return '-'
+            }
+        }
+        return date.getFullYear() + DodajNuluJEdnocifrenomMesecu() + (parseInt(date.getMonth()) + 1) + '-' + date.getDate()
     }
     const Boje = (id) => {
         if (!id)
@@ -59,33 +115,34 @@ const HelperFuntion = () => {
         // if(data.length>0)
         return data
     }
-    const OsveziElementBaze=async(vozilo,vozila)=>{ //ova funkcija se okida samo kada se brise zadnji element starog stejta
-        let niz=vozila                              //mogla je ona da osvezava stejt kroz celu aplikaciju, ali je ovako odradjeno zbog brzine
-        const noviInfo=await GetInfoVozilo(vozilo)
-        for(let i=0;i<niz.length;i++){
-            if(niz[i].unit.id===vozilo.raw.getId())
-            niz[i]={unit:niz[i].unit, bazaInfo:noviInfo}
+    const OsveziElementBaze = async (vozilo, vozila) => { //ova funkcija se okida samo kada se brise zadnji element starog stejta
+        let niz = vozila                              //mogla je ona da osvezava stejt kroz celu aplikaciju, ali je ovako odradjeno zbog brzine
+        const noviInfo = await GetInfoVozilo(vozilo)
+        for (let i = 0; i < niz.length; i++) {
+            if (niz[i].unit.id === vozilo.raw.getId())
+                niz[i] = { unit: niz[i].unit, bazaInfo: noviInfo }
         }
     }
-    const GetAllFirmeILokacije=async()=>{
-        const data=await(await fetch(`${url}firme/getall`)).json()
+    const GetAllFirmeILokacije = async () => {
+        const data = await (await fetch(`${url}firme/getall`)).json()
         return data;
     }
-    const BrisanjeFirmeILokacije=async(Id,naziv)=>{
+    const BrisanjeFirmeILokacije = async (Id, naziv) => {
         let result = window.confirm(`Da li želite da obrišete lokaciju i firmu ${naziv}?`);
-        if(!result)
-        return null
+        if (!result)
+            return null
         const data = await (await fetch(`${url}firme/delete/${Id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-            }})).json();
+            }
+        })).json();
     }
-    const UpdateFirmeILokacije = async (Id,naziv,lokacija) => {
+    const UpdateFirmeILokacije = async (Id, naziv, lokacija) => {
         let result = window.confirm(`Da li želite da izmenite lokaciju/naziv firme ${naziv}?`);
-        if(!result)
-        return null
-        const parametri = { Id:Id, naziv:naziv, lokacija:lokacija };
+        if (!result)
+            return null
+        const parametri = { Id: Id, naziv: naziv, lokacija: lokacija };
         const data = await (await fetch(`${url}firme/update`, {
             method: 'POST',
             headers: {
@@ -94,11 +151,11 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    const UpdateMailFirme= async (Id,mail,naziv) => {
+    const UpdateMailFirme = async (Id, mail, naziv) => {
         let result = window.confirm(`Da li želite da izmenite mail firme ${naziv}?`);
-        if(!result)
-        return null
-        const parametri = { Id:Id, mail:mail};
+        if (!result)
+            return null
+        const parametri = { Id: Id, mail: mail };
         const data = await (await fetch(`${url}firme/updateMail`, {
             method: 'POST',
             headers: {
@@ -107,8 +164,9 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    const InsertFirmaILokacija = async (naziv,lokacija) => {
-        const parametri = {naziv:naziv, lokacija:lokacija };
+    const InsertFirmaILokacija = async (naziv, lokacija) => {
+        console.log(naziv, lokacija)
+        const parametri = { naziv: naziv, lokacija: lokacija };
         const data = await (await fetch(`${url}firme/insert`, {
             method: 'POST',
             headers: {
@@ -116,19 +174,20 @@ const HelperFuntion = () => {
             },
             body: JSON.stringify(parametri)
         })).json();
-        if(data.message.errno==1062){
+        if (data.message.errno == 1062) {
             alert('Ova firma već postoji')
         }
+        console.log(data)
     }
-    const GetAllFirmeIKontakte=async()=>{
-        const data=await(await fetch(`${url}kontakti/getall`)).json()
+    const GetAllFirmeIKontakte = async () => {
+        const data = await (await fetch(`${url}kontakti/getall`)).json()
         return data;
     }
-    const UpdateKontaktIBroj= async (IdKontakta,osoba,broj) => {
+    const UpdateKontaktIBroj = async (IdKontakta, osoba, broj) => {
         let result = window.confirm(`Da li želite da izmenite broj telefona osobe ${osoba}?`);
-        if(!result)
-        return null
-        const parametri = { IdKontakta:IdKontakta,osoba:osoba,broj:broj};
+        if (!result)
+            return null
+        const parametri = { IdKontakta: IdKontakta, osoba: osoba, broj: broj };
         const data = await (await fetch(`${url}kontakti/update`, {
             method: 'POST',
             headers: {
@@ -137,22 +196,23 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    const BrisanjeKontakta=async(IdKontakta,osoba)=>{
+    const BrisanjeKontakta = async (IdKontakta, osoba) => {
         let result = window.confirm(`Da li želite da obrišete kontakt ${osoba}?`);
-        if(!result)
-        return null
+        if (!result)
+            return null
         const data = await (await fetch(`${url}kontakti/delete/${IdKontakta}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-            }})).json();
+            }
+        })).json();
     }
-    const InsertKontakti = async (idFirme,osoba,broj) => {
-        if(!osoba||!broj){
+    const InsertKontakti = async (idFirme, osoba, broj) => {
+        if (!osoba || !broj) {
             alert('Popunite polja!')
             return
         }
-        const parametri = {idFirme:idFirme, osoba:osoba, broj:broj};
+        const parametri = { idFirme: idFirme, osoba: osoba, broj: broj };
         const data = await (await fetch(`${url}kontakti/insert`, {
             method: 'POST',
             headers: {
@@ -161,11 +221,11 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    const UpdateObukeDatumIPredavac = async (Id,zakazana,predavac,odrzana,naziv) => {
+    const UpdateObukeDatumIPredavac = async (Id, zakazana, predavac, odrzana, naziv) => {
         let result = window.confirm(`Da li želite da izmenite zakazan termin/predavaca za firmu ${naziv}?`);
-        if(!result)
-        return null
-        const parametri = { Id:Id, zakazana:zakazana, predavac:predavac, odrzana:odrzana };
+        if (!result)
+            return null
+        const parametri = { Id: Id, zakazana: zakazana, predavac: predavac, odrzana: odrzana };
         const data = await (await fetch(`${url}obuke/update`, {
             method: 'POST',
             headers: {
@@ -175,15 +235,15 @@ const HelperFuntion = () => {
         })).json();
         console.log(data)
     }
-    const GetAllFirmeINaloge=async()=>{
-        const data=await(await fetch(`${url}nalozi/getall`)).json()
+    const GetAllFirmeINaloge = async () => {
+        const data = await (await fetch(`${url}nalozi/getall`)).json()
         return data;
     }
-    const UpdateNalozi= async (idNalozi,platforma,korisnickoIme,lozinka,firma) => {
+    const UpdateNalozi = async (idNalozi, platforma, korisnickoIme, lozinka, firma) => {
         let result = window.confirm(`Da li želite da izmenite podatke naloga firme ${firma}?`);
-        if(!result)
-        return null
-        const parametri = { idNalozi:idNalozi,platforma:platforma,korisnickoIme:korisnickoIme,lozinka:lozinka};
+        if (!result)
+            return null
+        const parametri = { idNalozi: idNalozi, platforma: platforma, korisnickoIme: korisnickoIme, lozinka: lozinka };
         const data = await (await fetch(`${url}nalozi/update`, {
             method: 'POST',
             headers: {
@@ -192,12 +252,12 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    const InsertNalozi = async (idFirme,platforma,korisnickoIme,lozinka) => {
-        if(!korisnickoIme||!lozinka){
+    const InsertNalozi = async (idFirme, platforma, korisnickoIme, lozinka) => {
+        if (!korisnickoIme || !lozinka) {
             alert('Popunite polja za korisničko ime i lozinku!')
             return
         }
-        const parametri = {idFirme:idFirme,platforma:platforma,korisnickoIme:korisnickoIme,lozinka:lozinka};
+        const parametri = { idFirme: idFirme, platforma: platforma, korisnickoIme: korisnickoIme, lozinka: lozinka };
         const data = await (await fetch(`${url}nalozi/insert`, {
             method: 'POST',
             headers: {
@@ -206,23 +266,48 @@ const HelperFuntion = () => {
             body: JSON.stringify(parametri)
         })).json();
     }
-    return { IspisiRazlikuNejavljanja,
-          Boje,
-          GetInfoVozilo,
-          OsveziElementBaze,
-          GetAllFirmeILokacije,
-          BrisanjeFirmeILokacije,
-          UpdateFirmeILokacije,
-          InsertFirmaILokacija,
-          GetAllFirmeIKontakte,
-          UpdateMailFirme,
-          UpdateKontaktIBroj,
-          BrisanjeKontakta,
-          InsertKontakti,
-          KonverterVremenaIzBaze,
-          UpdateObukeDatumIPredavac,
-          GetAllFirmeINaloge,
-          UpdateNalozi,
-          InsertNalozi }
+    const VratiSveUsere = async () => await (await fetch(`${url}nalozi/users`)).json()
+
+    const VratiKomentarePoDanuIkorisniku = async (filter, odDatum, korisnik, boja) => {
+        const parametri = { odDatum: odDatum, korisnik: korisnik, boja: boja };
+        try {
+            const data = await (await fetch(`${url}statistika/${filter}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(parametri)
+            })).json();
+            return data;
+        } catch (err) {
+            alert(err)
+        }
+    }
+
+    return {
+        IspisiRazlikuNejavljanja,
+        Boje,
+        GetInfoVozilo,
+        OsveziElementBaze,
+        GetAllFirmeILokacije,
+        BrisanjeFirmeILokacije,
+        UpdateFirmeILokacije,
+        InsertFirmaILokacija,
+        GetAllFirmeIKontakte,
+        UpdateMailFirme,
+        UpdateKontaktIBroj,
+        BrisanjeKontakta,
+        InsertKontakti,
+        KonverterVremenaIzBaze,
+        UpdateObukeDatumIPredavac,
+        GetAllFirmeINaloge,
+        UpdateNalozi,
+        InsertNalozi,
+        VratiSveUsere,
+        VratiKomentarePoDanuIkorisniku,
+        KonverzijaVremenaStatistika,
+        DanUNedelji,
+        MesecUGodini
+    }
 }
 export default HelperFuntion;

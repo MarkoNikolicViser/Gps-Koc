@@ -3,41 +3,41 @@ import HelperFuntion from "../../helper/HelperFunction";
 import { TContext } from "../context";
 import ListaKomentara from "./ListaKomentara";
 
-const MoreInfo = ({vozila,setVozila,vozilo, idVozilo,idUredjaja, nazivUredjaja, lokacija, razlika, vreme, sateliti, x, y, brzinaCan, brzina, kilometraza, kilometrazaCan, senzori, ObojRed, bazaInfo, bazaInfoNew,setBazaInfoNew, broj, granica }) => {
-//////////////////////////////
-const {korisnik,url}=useContext(TContext)
-const [korisnikValue,setKorisnikValue]=korisnik
-/////////////////////////////
+const MoreInfo = ({ vozila, setVozila, vozilo, idVozilo, idUredjaja, nazivUredjaja, lokacija, razlika, vreme, sateliti, x, y, brzinaCan, brzina, kilometraza, kilometrazaCan, senzori, ObojRed, bazaInfo, bazaInfoNew, setBazaInfoNew, broj, granica }) => {
+    //////////////////////////////
+    const { korisnik, url } = useContext(TContext)
+    const [korisnikValue, setKorisnikValue] = korisnik
+    /////////////////////////////
     const { Boje, GetInfoVozilo } = HelperFuntion()
-    const [bojaSelecta,setBojaSelecta]=useState('DEFAULT')
-    const [komentar,setKomentar]=useState('')
+    const [bojaSelecta, setBojaSelecta] = useState('DEFAULT')
+    const [komentar, setKomentar] = useState('')
 
-const InsertKomentar=async()=>{
-    if(!komentar.length){
-        alert('Morate popuniti polje za komentar')
-        return null
+    const InsertKomentar = async () => {
+        if (!komentar.length) {
+            alert('Morate popuniti polje za komentar')
+            return null
+        }
+        if (bojaSelecta === 'DEFAULT') {
+            alert('Morate odabrati boju')
+            return null
+        }
+        const parametri = { idVozilo: idVozilo, komentar: komentar, boja: bojaSelecta, korisnik: korisnikValue.Id };
+        const data = await (await fetch(`${url}komentar/insert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametri)
+        })).json();
+        setKomentar('')
+        setBojaSelecta('DEFAULT')
+        setBazaInfoNew(await GetInfoVozilo(vozilo))
     }
-    if(bojaSelecta==='DEFAULT'){
-        alert('Morate odabrati boju')
-        return null
-    }
-    const parametri = { idVozilo: idVozilo, komentar:komentar, boja:bojaSelecta, korisnik:korisnikValue.Id};
-    const data = await (await fetch(`${url}komentar/insert`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(parametri)
-    })).json();
-    setKomentar('')
-    setBojaSelecta('DEFAULT')
-    setBazaInfoNew(await GetInfoVozilo(vozilo))
-}
     return <div style={ObojRed} className='more-info'>
         {granica ? (<h4>Prelazak granice</h4>) : (null)}
         <div>{vreme} ({razlika})</div>
         <div>{lokacija}</div>
-        <table style={{background:'#FAF9F6',marginTop:'-0.5px'}}>
+        <table style={{ background: '#FAF9F6', marginTop: '-0.5px' }}>
             <tbody>
                 <tr>
                     {brzinaCan != 'N/A' ? (<td>{brzinaCan} km/h</td>) : (<td>{brzina} km/h</td>)}
@@ -49,7 +49,7 @@ const InsertKomentar=async()=>{
                 </tr>
             </tbody>
         </table>
-        <div style={{ display: 'flex', border: '1px solid gray', padding: '1px', marginTop: '10px',background:'#FAF9F6' }}>
+        <div style={{ display: 'flex', border: '1px solid gray', padding: '1px', marginTop: '10px', background: '#FAF9F6' }}>
             <div>
                 <div style={{ margin: '1px', padding: '0.5px', border: '0.5px solid gray', display: 'flex' }}><h6>Id:</h6> <h6 style={{ fontWeight: '100' }}>{idUredjaja}</h6></div>
                 {senzori.map((m, index) => (
@@ -57,14 +57,14 @@ const InsertKomentar=async()=>{
                 ))}
             </div>
             <div>
-                <div style={{ margin: '1px',padding: '0.5px', border: '0.5px solid gray', display: 'flex' }}><h6>Uređaj:</h6>{nazivUredjaja?(<h6 style={{ fontWeight: '100' }}>{nazivUredjaja}</h6>):(<h6>Učitavam...</h6>)}</div>
+                <div style={{ margin: '1px', padding: '0.5px', border: '0.5px solid gray', display: 'flex' }}><h6>Uređaj:</h6>{nazivUredjaja ? (<h6 style={{ fontWeight: '100' }}>{nazivUredjaja}</h6>) : (<h6>Učitavam...</h6>)}</div>
                 <div style={{ margin: '1px', padding: '0.5px', border: '0.5px solid gray', display: 'flex' }}><h6>Broj:</h6> <h6 style={{ fontWeight: '100' }}>{broj}</h6></div>
                 {senzori.map((m, index) => (
                     index % 2 != 0 ? (<div style={{ margin: '1px', padding: '0.5px', border: '0.5px solid gray', display: 'flex' }} key={index}><h6>{m.senzor}:</h6> <h6 style={{ fontWeight: '100' }}>{m.vrednost}</h6></div>) : (null)
                 ))}
             </div>
         </div>
-        <table style={{ fontSize: '10px',width:'97%',background: '#FAF9F6'}}>
+        <table style={{ fontSize: '10px', width: '97%', background: '#FAF9F6' }}>
             <thead>
                 <tr>
                     <th>komentar</th>
@@ -76,9 +76,9 @@ const InsertKomentar=async()=>{
             </thead>
             <tbody>
                 <tr>
-                    <td><input value={komentar} onChange={(e)=>setKomentar(e.target.value)} style={{ width: '100%' }} type="text" /></td>
-                    <td><select className='boje-select' value={bojaSelecta} name="" style={Boje(parseInt(bojaSelecta))} onChange={(e)=>setBojaSelecta(e.target.value)} id="">
-                       <option disabled value='DEFAULT'>Boja</option>
+                    <td><input value={komentar} onChange={(e) => setKomentar(e.target.value)} style={{ width: '100%' }} type="text" /></td>
+                    <td><select className='boje-select' value={bojaSelecta} name="" style={Boje(parseInt(bojaSelecta))} onChange={(e) => setBojaSelecta(e.target.value)} id="">
+                        <option disabled value='DEFAULT'>Boja</option>
                         <option style={{ background: '#FF7F7F' }} value="1"></option>
                         <option style={{ background: '#fdfd66' }} value="2"></option>
                         <option style={{ background: '#cf9fe5' }} value="3"></option>
@@ -97,26 +97,26 @@ const InsertKomentar=async()=>{
                             <option value="">ne</option>
                         </select>
                     </td> */}
-                    <td style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <svg onClick={InsertKomentar} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.856 10.303c.086.554.144 1.118.144 1.697 0 6.075-4.925 11-11 11s-11-4.925-11-11 4.925-11 11-11c2.347 0 4.518.741 6.304 1.993l-1.422 1.457c-1.408-.913-3.082-1.45-4.882-1.45-4.962 0-9 4.038-9 9s4.038 9 9 9c4.894 0 8.879-3.928 8.99-8.795l1.866-1.902zm-.952-8.136l-9.404 9.639-3.843-3.614-3.095 3.098 6.938 6.71 12.5-12.737-3.096-3.096z" /></svg>                                </td>
                 </tr>
-                </tbody>
+            </tbody>
         </table>
-        <table style={{ fontSize: '10px',width:'97%',maxHeight:'100px', overflow:'none',background:'#FAF9F6',textAlign:'center' }}>
-           <thead>
-               <tr>
-                   <th>Komentar</th>
-                   <th>Korisnik</th>
-                   <th>Datum</th>
-                   <th>Edit</th>
-                   <th>Delete</th>
-               </tr>
-           </thead>
+        <table style={{ fontSize: '10px', width: '97%', maxHeight: '100px', overflow: 'none', background: '#FAF9F6', textAlign: 'center' }}>
+            <thead>
+                <tr>
+                    <th>Komentar</th>
+                    <th>Korisnik</th>
+                    <th>Datum</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
             <tbody>
-                {bazaInfoNew.length>0&& bazaInfoNew.map((m, index) => (
-                  <ListaKomentara  key={index}  vozila={vozila} setVozila={setVozila} info={m} setBazaInfoNew={setBazaInfoNew} bazaInfo={bazaInfo} vozilo={vozilo}/>
+                {bazaInfoNew.length > 0 && bazaInfoNew.map((m, index) => (
+                    <ListaKomentara key={index} vozila={vozila} setVozila={setVozila} info={m} setBazaInfoNew={setBazaInfoNew} bazaInfo={bazaInfo} vozilo={vozilo} />
                 ))}
-                            </tbody>
+            </tbody>
         </table>
     </div>
 }

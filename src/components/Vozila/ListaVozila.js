@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useContext } from "react";
 import ElementListe from "./ElementListe";
 import HelperFuntion from "../../helper/HelperFunction";
 import { LoaderCustom } from "../LoaderCustom";
-
+import { TContext } from "../context";
 
 /* global wialon */
 
@@ -13,7 +13,8 @@ function msg(msg) {
 
 // Main app class
 const ListaVozila = () => {
-
+    const{svaVozilaC}=useContext(TContext)
+    const [svaVozilaCValue,setSvaVozilaCValue]=svaVozilaC
     const { GetInfoVozilo } = HelperFuntion()
 
     const [svaVozila, setSvaVozila] = useState([])
@@ -139,6 +140,7 @@ const ListaVozila = () => {
                 }
                 setVozila(prev => prev = unitsState)
                 setSvaVozila(prev => prev = res)
+                setSvaVozilaCValue(prev => prev = res)
                 setLoading(false)
             }
         );

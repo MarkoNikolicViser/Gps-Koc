@@ -5,9 +5,10 @@ export const TContext=createContext();
 
 
 export const TProvider=(props)=>{
-    const url='https://mvps.almaks.rs:3001/'
-    //const url='http://localhost:3001/'
+    //const url='https://mvps.almaks.rs:3001/'
+    const url='http://localhost:3004/'
 
+    const [svaVozilaC,setSvaVozilaC]=useState([])
     const[komentari,setKomentari]=useState([{
         id:"",
         tiket:"",
@@ -29,7 +30,8 @@ export const TProvider=(props)=>{
             loginToken:[loginToken,setLoginToken],
             korisnik:[korisnik,setKorisnik],
             url:url,
-            voziloInfo:[voziloInfo,setVoziloInfo]
+            voziloInfo:[voziloInfo,setVoziloInfo],
+            svaVozilaC:[svaVozilaC,setSvaVozilaC]
          }}>
             {props.children}
         </TContext.Provider>

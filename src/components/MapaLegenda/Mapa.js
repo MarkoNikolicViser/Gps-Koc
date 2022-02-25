@@ -16,7 +16,6 @@ const Mapa = () => {
 
   const Zoom = () => {
     const map = mapRef.current;
-    console.log(map)
     var group = new L.featureGroup([L.marker([voziloInfoValue.y, voziloInfoValue.x])]);
     if (map) map.leafletElement.fitBounds(group.getBounds());
   }
