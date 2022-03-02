@@ -1,8 +1,8 @@
 
 
 const HelperFuntion = () => {
-    const url='https://mvps.almaks.rs:3001/'
-    //const url = 'http://localhost:3004/'
+    //const url='https://mvps.almaks.rs:3001/'
+    const url = 'http://localhost:3004/'
     const DanUNedelji = (index) => {
         switch (true) {
             case (index == 0): return 'Nedelja'
@@ -75,19 +75,24 @@ const HelperFuntion = () => {
         }
     }
     const KonverterVremenaIzBaze = (vreme) => {
-        const vremeZona = new Date().toLocaleString('en-GB', { timeZone: 'Europe/Belgrade' })
+        const vremeZona = new Date(vreme).toLocaleString('en-GB', { timeZone: 'Europe/Belgrade' })
         let vreme2 = vremeZona.replace('T', ' ')
         return vreme2.replace('.000Z', '')
     }
-    const KonverzijaVremenaStatistika = (date) => {
-        const DodajNuluJEdnocifrenomMesecu = () => {
-            if (date.getMonth() <= 9)
-                return '-0'
-            else {
-                return '-'
-            }
+    const DodajNuluJEdnocifrenomBroju = (broj) => {
+        if (broj <= 9)
+            return `0${broj}`
+        else {
+            return `${broj}`
         }
-        return date.getFullYear() + DodajNuluJEdnocifrenomMesecu() + (parseInt(date.getMonth()) + 1) + '-' + date.getDate()
+    }
+    const KonverzijaVremenaStatistika = (date) => {
+        return date.getFullYear().toString() +'-'+ DodajNuluJEdnocifrenomBroju(parseInt(date.getMonth()) + 1).toString() +'-'+ DodajNuluJEdnocifrenomBroju(date.getDate()).toString()
+    }
+    const KonverzijaVremenaObuka = (datum) => {
+        const date=new Date(datum)
+        let returnDate= date.getFullYear() +'-'+ DodajNuluJEdnocifrenomBroju(parseInt(date.getMonth()) + 1) +'-'+ DodajNuluJEdnocifrenomBroju(date.getDate()) +'T'+ DodajNuluJEdnocifrenomBroju(date.getHours()) + ':' + DodajNuluJEdnocifrenomBroju(date.getMinutes())
+        return returnDate.replace('.000Z','')
     }
     const Boje = (id) => {
         if (!id)
@@ -165,7 +170,6 @@ const HelperFuntion = () => {
         })).json();
     }
     const InsertFirmaILokacija = async (naziv, lokacija) => {
-        console.log(naziv, lokacija)
         const parametri = { naziv: naziv, lokacija: lokacija };
         const data = await (await fetch(`${url}firme/insert`, {
             method: 'POST',
@@ -177,7 +181,6 @@ const HelperFuntion = () => {
         if (data.message.errno == 1062) {
             alert('Ova firma već postoji')
         }
-        console.log(data)
     }
     const GetAllFirmeIKontakte = async () => {
         const data = await (await fetch(`${url}kontakti/getall`)).json()
@@ -233,7 +236,6 @@ const HelperFuntion = () => {
             },
             body: JSON.stringify(parametri)
         })).json();
-        console.log(data)
     }
     const GetAllFirmeINaloge = async () => {
         const data = await (await fetch(`${url}nalozi/getall`)).json()
@@ -283,6 +285,14 @@ const HelperFuntion = () => {
             alert(err)
         }
     }
+    const ProveraObuke=async()=>{
+        try{
+            const data=await(await fetch(`${url}obuke/notifikacija`)).json()
+            return data
+        }catch(err){
+            alert(err)
+        }
+    }
 
     return {
         IspisiRazlikuNejavljanja,
@@ -307,7 +317,10 @@ const HelperFuntion = () => {
         VratiKomentarePoDanuIkorisniku,
         KonverzijaVremenaStatistika,
         DanUNedelji,
-        MesecUGodini
+        MesecUGodini,
+        DodajNuluJEdnocifrenomBroju,
+        KonverzijaVremenaObuka,
+        ProveraObuke
     }
 }
 export default HelperFuntion;

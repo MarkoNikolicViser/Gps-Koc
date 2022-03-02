@@ -15,7 +15,7 @@ function msg(msg) {
 const ListaVozila = () => {
     const{svaVozilaC}=useContext(TContext)
     const [svaVozilaCValue,setSvaVozilaCValue]=svaVozilaC
-    const { GetInfoVozilo } = HelperFuntion()
+    const { GetInfoVozilo,ProveraObuke, KonverterVremenaIzBaze } = HelperFuntion()
 
     const [svaVozila, setSvaVozila] = useState([])
     const [vozila24, setVozila24] = useState([])
@@ -47,6 +47,21 @@ const ListaVozila = () => {
         if (node) observer.current.observe(node)
     }, [])
 
+    useEffect(()=>{
+        const intervalId = setInterval(async() => {
+            const data=await ProveraObuke()
+            if(!data.length)
+            return
+        let result = window.confirm(`Potsetnik za obuku\n
+        ${data.map(m=>'firma '+m.naziv+' u '+KonverterVremenaIzBaze(m.zakazana))}
+        `);
+        if (!result)
+            return null
+    },[900000])
+    return () => {
+        clearInterval(intervalId); //This is important
+    }
+    },[])
 
     const [vozila, setVozila] = useState([])
     const token = `${process.env.REACT_APP_TOKEN_ANALIZE}`

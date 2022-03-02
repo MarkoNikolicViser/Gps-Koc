@@ -5,8 +5,8 @@ export const TContext=createContext();
 
 
 export const TProvider=(props)=>{
-    const url='https://mvps.almaks.rs:3001/'
-    //const url='http://localhost:3004/'
+    //const url='https://mvps.almaks.rs:3001/'
+    const url='http://localhost:3004/'
 
     const [svaVozilaC,setSvaVozilaC]=useState([])
     const[komentari,setKomentari]=useState([{

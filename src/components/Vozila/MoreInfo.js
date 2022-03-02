@@ -108,7 +108,7 @@ const MoreInfo = ({ vozila, setVozila, vozilo, idVozilo, idUredjaja, nazivUredja
                     <th>Komentar</th>
                     <th>Korisnik</th>
                     <th>Datum</th>
-                    <th>Edit</th>
+                    {/* <th>Edit</th> */}
                     <th>Delete</th>
                 </tr>
             </thead>
