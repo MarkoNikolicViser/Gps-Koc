@@ -219,10 +219,11 @@ const MoreInfo = ({
                 </option>
                 <option style={{ background: '#FF7F7F' }} value='1'></option>
                 <option style={{ background: '#fdfd66' }} value='2'></option>
-                <option style={{ background: '#cf9fe5' }} value='3'></option>
+                <option style={{ background: '#8739ad' }} value='3'></option>
                 <option style={{ background: '#90ee90' }} value='4'></option>
                 <option style={{ background: '#a9a9a9' }} value='5'></option>
                 <option style={{ background: '#FFB6C1' }} value='6'></option>
+                <option style={{ background: '#5dc8ef' }} value='7'></option>
               </select>
             </td>
             {/* <td>

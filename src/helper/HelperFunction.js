@@ -139,10 +139,11 @@ const HelperFuntion = () => {
     if (!id) return { background: '#FAF9F6' }; //belo
     if (id === 1) return { background: '#FF7F7F' }; //crveno
     if (id === 2) return { background: '#fdfd66' }; //zuto
-    if (id === 3) return { background: '#ac72c9' }; //ljubicasto
+    if (id === 3) return { background: '#8739ad' }; //ljubicasto
     if (id === 4) return { background: '#90ee90' }; //zeleno
     if (id === 5) return { background: '#a9a9a9' }; //sivo
     if (id === 6) return { background: '#FFB6C1' }; //pink
+    if (id === 7) return { background: '#5dc8ef' }; //plavo
   };
   const GetInfoVozilo = async vozilo => {
     const parametri = { idVozilo: vozilo.raw.getId() };
