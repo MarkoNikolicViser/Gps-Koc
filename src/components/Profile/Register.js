@@ -133,7 +133,7 @@ const Register = () => {
                 </div>
             </div>
             <div style={{ height: '10vh', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-                <table style={{ background: '#FAF9F6', width: '60%' }}>
+                <table style={{ background: '#FAF9F6', width: '60%', marginTop:'200px' }}>
                     <thead>
                         <tr>
                             <th>No</th>
