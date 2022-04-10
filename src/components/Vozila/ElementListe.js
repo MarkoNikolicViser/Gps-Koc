@@ -15,7 +15,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
   const [voziloInfoValue, setVoziloInfoValue] = voziloInfo;
   ///////////////////////////////////////////////
   const [moreInfo, setMoreInfo] = useState(false);
-  const { IspisiRazlikuNejavljanja, GetInfoVozilo, Boje } = HelperFuntion();
+  const { IspisiRazlikuNejavljanja, GetInfoVozilo, Boje, checkNested } = HelperFuntion();
   const [lokacija2, setLokacija2] = useState('');
   const [nazivUredjaja, setNazivUredjaja] = useState('');
   const [granica, setGranica] = useState(false);
@@ -37,7 +37,9 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
     );
   };
   const ObojRed = () => {
-    if (bazaInfo.length <= 0 && bazaInfoNew.length <= 0)
+    if (
+      //bazaInfo.length <= 0 && 
+      bazaInfoNew.length <= 0)
       return { background: '#FAF9F6' };
     let id;
     if (bazaInfoNew.length > 0) id = bazaInfoNew[bazaInfoNew.length - 1].boja;
@@ -51,7 +53,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
     Lokacija(vozilo.raw.getPosition().x, vozilo.raw.getPosition().y);
     setMoreInfo(prev => (prev = !prev));
     Senzori();
-    setBazaInfoNew(await GetInfoVozilo(vozilo));
+    setBazaInfoNew(await GetInfoVozilo(vozilo.id));
     VratiNazivUredjaja(vozilo.raw.$$user_deviceTypeId);
   };
   const VratiNazivUredjaja = idHardvera => {
@@ -119,7 +121,9 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
     <>
       {vozilo && (
         <div>
-          <div style={ObojRed()} className='row'>
+          <div
+            // style={ObojRed()}
+            className='row'>
             <img
               onClick={MoreInfoFunkcija}
               src={vozilo.raw.getIconUrl()}
@@ -147,7 +151,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
               </div>
               <div>
                 {
-                  IspisiRazlikuNejavljanja(vozilo.raw.$$user_lastMessage.t)
+                  IspisiRazlikuNejavljanja(checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null)
                     .vreme
                 }
               </div>
@@ -162,8 +166,8 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 marginLeft: '3px',
               }}
             >
-              {/* {vozilo.raw.$$user_position.sc !== 255 ||
-              vozilo.raw.$$user_position.sc ? (
+              { checkNested(vozilo.raw, '$$user_position', 'sc')&&(vozilo.raw.$$user_position.sc !== 255 ||
+              vozilo.raw.$$user_position.sc) ? (
                 <svg
                   style={{ fill: 'green', width: '17px' }}
                   xmlns='http://www.w3.org/2000/svg'
@@ -183,7 +187,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 >
                   <path d='M8.213 16.984c.97-1.028 2.308-1.664 3.787-1.664s2.817.636 3.787 1.664l-3.787 4.016-3.787-4.016zm-1.747-1.854c1.417-1.502 3.373-2.431 5.534-2.431s4.118.929 5.534 2.431l2.33-2.472c-2.012-2.134-4.793-3.454-7.864-3.454s-5.852 1.32-7.864 3.455l2.33 2.471zm-4.078-4.325c2.46-2.609 5.859-4.222 9.612-4.222s7.152 1.613 9.612 4.222l2.388-2.533c-3.071-3.257-7.313-5.272-12-5.272s-8.929 2.015-12 5.272l2.388 2.533z' />
                 </svg>
-              )} */}
+              )}
               {Senzor('Kontakt') > 0 ? (
                 <svg
                   style={{ width: '17px', fill: 'green' }}
@@ -246,8 +250,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 {Senzor('Brzina') != 'N/A' ? (
                   <h5>{(Senzor('Brzina') * 10) / 10} km/h</h5>
                 ) : (
-                  // <h5>{vozilo.raw.$$user_position.s?vozilo.raw.$$user_position.s.toFixed(0):'...'} km/h</h5>
-                  <h5>...</h5>
+                  <h5>{checkNested(vozilo.raw, '$$user_position', 's')?vozilo.raw.$$user_position.s.toFixed(0):'...'} km/h</h5>
                 )}
               </div>
             </div>
@@ -257,7 +260,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 width: '3%',
                 height: '100%',
                 background: IspisiRazlikuNejavljanja(
-                  vozilo.raw.$$user_lastMessage.t
+                  checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null
                 ).boja,
               }}
             ></div>
@@ -266,10 +269,10 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
             <MoreInfo
               lokacija={lokacija2}
               razlika={
-                IspisiRazlikuNejavljanja(vozilo.raw.$$user_lastMessage.t).vreme
+                checkNested(vozilo.raw, '$$user_lastMessage', 't') ? IspisiRazlikuNejavljanja(vozilo.raw.$$user_lastMessage.t).vreme : null
               }
               vreme={wialon.util.DateTime.formatTime(
-                vozilo.raw.$$user_lastMessage.t,
+                checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null,
                 0
               )}
               x={vozilo.raw.getPosition().x}
@@ -282,7 +285,7 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
               kilometraza={vozilo.raw.$$user_mileageCounter}
               senzori={senzori}
               ObojRed={ObojRed()}
-              bazaInfo={bazaInfo}
+              // bazaInfo={bazaInfo}
               bazaInfoNew={bazaInfoNew}
               setBazaInfoNew={setBazaInfoNew}
               broj={vozilo.raw.$$user_phoneNumber}

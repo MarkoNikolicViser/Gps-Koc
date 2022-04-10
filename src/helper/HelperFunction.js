@@ -26,6 +26,18 @@ const HelperFuntion = () => {
         break;
     }
   };
+  function checkNested(obj) {
+    var args = Array.prototype.slice.call(arguments, 1);
+  
+    for (var i = 0; i < args.length; i++) {
+      if (!obj || !obj.hasOwnProperty(args[i])) {
+        return false;
+      }
+      obj = obj[args[i]];
+    }
+    return true;
+  }
+  
   const MesecUGodini = index => {
     switch (true) {
       case index == 1:
@@ -82,6 +94,12 @@ const HelperFuntion = () => {
 
   const IspisiRazlikuNejavljanja = vreme => {
     const razlika = KonverterVremena(vreme);
+    if(vreme==null){
+      return {
+        vreme: `...`,
+        boja: 'red',
+      };
+    }
     if (razlika.days)
       return {
         vreme: `pre ${razlika.days} dana ${razlika.hours} sati`,
@@ -146,7 +164,7 @@ const HelperFuntion = () => {
     if (id === 7) return { background: '#5dc8ef' }; //plavo
   };
   const GetInfoVozilo = async vozilo => {
-    const parametri = { idVozilo: vozilo.raw.getId() };
+    const parametri = { idVozilo: vozilo };
     const data = await (
       await fetch(`${url}vozila`, {
         method: 'POST',
@@ -421,6 +439,7 @@ const HelperFuntion = () => {
     DodajNuluJEdnocifrenomBroju,
     KonverzijaVremenaObuka,
     ProveraObuke,
+    checkNested
   };
 };
 export default HelperFuntion;

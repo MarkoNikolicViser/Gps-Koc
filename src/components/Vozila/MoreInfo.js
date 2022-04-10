@@ -65,7 +65,7 @@ const MoreInfo = ({
     setBazaInfoNew(await GetInfoVozilo(vozilo));
   };
   return (
-    <div style={ObojRed} className='more-info'>
+    <div style={{...ObojRed,position:'absolute',zIndex:1}} className='more-info'>
       {granica ? <h4>Prelazak granice</h4> : null}
       <div>
         {vreme} ({razlika})

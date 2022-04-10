@@ -3,6 +3,7 @@ import ElementListe from "./ElementListe";
 import HelperFuntion from "../../helper/HelperFunction";
 import { LoaderCustom } from "../LoaderCustom";
 import { TContext } from "../context";
+import { FixedSizeList as List } from 'react-window';
 
 /* global wialon */
 
@@ -13,76 +14,37 @@ function msg(msg) {
 
 // Main app class
 const ListaVozila = () => {
-    const{svaVozilaC}=useContext(TContext)
-    const [svaVozilaCValue,setSvaVozilaCValue]=svaVozilaC
-    const { GetInfoVozilo,ProveraObuke, KonverterVremenaIzBaze } = HelperFuntion()
+    const { svaVozilaC } = useContext(TContext)
+    const [svaVozilaCValue, setSvaVozilaCValue] = svaVozilaC
+    const { GetInfoVozilo, ProveraObuke, KonverterVremenaIzBaze, checkNested } = HelperFuntion()
 
     const [svaVozila, setSvaVozila] = useState([])
-    const [vozila24, setVozila24] = useState([])
-    const [filtriranaVozila,setFiltriranaVozila]=useState([])
     const [pretraga, setPretraga] = useState('')
     const [duzeOd24, setDuzeOd24] = useState({ svi: true, duze: false })
-    const [hasMore, setHesMore] = useState(true)
-    const [prikaz, setPrikaz] = useState(200)
-    const [prikaz24, setPrikaz24] = useState(150)
     const [loading, setLoading] = useState(true)
-    const [moreInfo, setMoreInfo] = useState(false)
-    const observer = useRef()
-    const lastElement = useCallback(node => {
-        if (observer.current) observer.current.disconnect()
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                setPrikaz(prev => prev = prev + 100)
-            }
-        })
-        if (node) observer.current.observe(node)
-    }, [])
-    const lastElement24 = useCallback(node => {
-        if (observer.current) observer.current.disconnect()
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                setPrikaz24(prev => prev = prev + 100)
-            }
-        })
-        if (node) observer.current.observe(node)
-    }, [])
 
-    useEffect(()=>{
-        const intervalId = setInterval(async() => {
-            const data=await ProveraObuke()
-            if(!data.length)
-            return
-        let result = window.confirm(`Potsetnik za obuku\n
-        ${data.map(m=>'firma '+m.naziv+' u '+KonverterVremenaIzBaze(m.zakazana))}
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
+            const data = await ProveraObuke()
+            if (!data.length)
+                return
+            let result = window.confirm(`Potsetnik za obuku\n
+        ${data.map(m => 'firma ' + m.naziv + ' u ' + KonverterVremenaIzBaze(m.zakazana))}
         `);
-        if (!result)
-            return null
-    },[900000])
-    return () => {
-        clearInterval(intervalId); //This is important
-    }
-    },[])
+            if (!result)
+                return null
+        }, [900000])
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, [])
 
-    const [vozila, setVozila] = useState([])
     const token = `${process.env.REACT_APP_TOKEN_ANALIZE}`
 
     useEffect(() => {
         componentDidMount()
     }, [])
-    useEffect(() => {
-        init()
-    }, [prikaz])
-    useEffect(() => {
-        ucitajJos24()
-    }, [prikaz24])
-    const [okiniFilter,setOkiniFilter]=useState(false)
-    useEffect(() => {
-        FiltriranaVozila()
-    }, [okiniFilter])
-    useEffect(() => {
-        if(pretraga.length>=3)
-        setOkiniFilter(prev=>prev=!prev)
-    }, [pretraga])
+
     const componentDidMount = () => {
         // initialize Wialon session
         wialon.core.Session.getInstance().initSession("https://hst-api.wialon.com");
@@ -106,9 +68,9 @@ const ListaVozila = () => {
         // flags to specify what kind of data should be returned
         const flags = wialon.item.Item.dataFlag.base |
             wialon.item.Unit.dataFlag.sensors |
-            wialon.item.Unit.dataFlag.lastMessage|
-            wialon.item.Unit.dataFlag.counters|
-            wialon.item.Unit.dataFlag.restricted|
+            wialon.item.Unit.dataFlag.lastMessage |
+            wialon.item.Unit.dataFlag.counters |
+            wialon.item.Unit.dataFlag.restricted |
             wialon.item.Unit.dataFlag.other;
         sess.loadLibrary("unitSensors"); // load Sensor Library
 
@@ -116,7 +78,7 @@ const ListaVozila = () => {
         sess.updateDataFlags(
             // load items to current session
             [{ type: "type", data: "avl_unit", flags: flags, mode: 0 }], // Items specification
-           async code => {
+            async code => {
                 // updateDataFlags callback
                 if (code) {
                     msg(wialon.core.Errors.getErrorText(code));
@@ -131,83 +93,38 @@ const ListaVozila = () => {
                 } // check if units found
                 let unitsStateSvi = [];
                 for (let i = 0; i < units.length; i++) {
-                    setLoading(true)
+                    // setLoading(true)
                     let unit = units[i];
-                    if (unit.getLastMessage())
-                        unitsStateSvi.push({
+                    // let bazaInfo=await GetInfoVozilo(unit.getId())
+                    // if (unit.getLastMessage())
+                    unitsStateSvi.push({
+                        unit: {
                             id: unit.getId(),
                             name: unit.getName(),
                             raw: unit
-                        });
+                        },
+                        //    bazaInfo:bazaInfo
+                    });
                 }
+
                 const res = unitsStateSvi.sort(function (a, b) {
-                    return a.raw.$$user_lastMessage.t - b.raw.$$user_lastMessage.t;
-                });
-                let unitsState = [];
-                for (let i = 0; i < prikaz; i++) {
-                    let unit = res[i];
-                    let bazaInfo=await GetInfoVozilo(unit)
-                    unitsState.push(
-                        {unit:unit,
-                        bazaInfo:bazaInfo 
-                        }
-                    );
-                }
-                setVozila(prev => prev = unitsState)
-                setSvaVozila(prev => prev = res)
-                setSvaVozilaCValue(prev => prev = res)
+                    return checkNested(a.unit.raw, '$$user_lastMessage', 't') && checkNested(b.unit.raw, '$$user_lastMessage', 't') && a.unit.raw.$$user_lastMessage.t - b.unit.raw.$$user_lastMessage.t
+                })
+                setSvaVozila(res)
+
                 setLoading(false)
             }
         );
-        ucitajJos24()
     }
+    const filter = svaVozila.filter(m => { return m.unit.name.toLowerCase().includes(pretraga.toLowerCase()) })
 
-    const FiltriranaVozila=async()=>{
-        let filtriranaVozilaT = svaVozila.filter(vozilo => {
-            return vozilo.name.toLowerCase().includes(pretraga.toLowerCase())
-        })
-        let niz=[]
-        for(let i=0;i<filtriranaVozilaT.length;i++){
-            let unit = filtriranaVozilaT[i];
-                    let bazaInfo=await GetInfoVozilo(unit)
-                    niz.push({
-                        unit:unit,
-                        bazaInfo:bazaInfo
-                    })
-        }
-        setFiltriranaVozila(prev=>prev=niz)
-    }
- 
+    const Row = useCallback(({ index, style }) => {
+        const { unit } = filter[index] || {}
+        return <div style={style}>
+            <ElementListe vozila={filter} setVozila={setSvaVozila} vozilo={unit} />
+        </div>
+    })
 
-    const ucitajJos24 = async() => {
-        let niz = [];
-        const vremeSad = new Date().getTime()
-        if (svaVozila.length > 0) {
-            for (let i = 0; i < svaVozila.length; i++) {
-                const zadnjeJavljanje = new Date(svaVozila[i].raw.$$user_lastMessage.t * 1000)
-                let razlika = vremeSad - zadnjeJavljanje;
-                razlika = razlika / 1000;
-                var seconds = Math.floor(razlika % 60);
-                razlika = razlika / 60;
-                var minutes = Math.floor(razlika % 60);
-                razlika = razlika / 60;
-                var hours = Math.floor(razlika % 24);
-                var days = Math.floor(razlika / 24);
-                if (days)
-                    niz.push(svaVozila[i])
-            }
-            const res = niz.sort(function (a, b) {
-                return b.raw.$$user_lastMessage.t - a.raw.$$user_lastMessage.t;
-            });
-            let niz2 = []
-            for (let i = 0; i < prikaz24; i++) {
-                let unit = res[i];
-                let bazaInfo=await GetInfoVozilo(unit)
-                niz2.push({unit:unit,bazaInfo:bazaInfo})
-            }
-            setVozila24(prev => prev = niz2)
-        }
-    }
 
     return (
         <div className="lista">
@@ -218,46 +135,27 @@ const ListaVozila = () => {
                 <input value={pretraga} type="text" onChange={(e) => setPretraga(prev => prev = e.target.value)} name="" id="" />
                 <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
                     <div>
-                        <input checked={duzeOd24.svi} onChange={() => {setDuzeOd24(prev => prev = { svi: true, duze: false });setPretraga(prev=>prev='')}} type="radio" name="Svi" id="" />
+                        <input checked={duzeOd24.svi} onChange={() => { setDuzeOd24(prev => prev = { svi: true, duze: false }); setPretraga(prev => prev = '') }} type="radio" name="Svi" id="" />
                         <label htmlFor="svi">Svi</label>
                     </div>
                     <div>
-                        <input checked={duzeOd24.duze} type="radio" onChange={() => {setDuzeOd24(prev => prev = { svi: false, duze: true });setPretraga(prev=>prev='')}} name="duze" id="" />
+                        <input checked={duzeOd24.duze} type="radio" onChange={() => { setDuzeOd24(prev => prev = { svi: false, duze: true }); setPretraga(prev => prev = '') }} name="duze" id="" />
                         <label htmlFor="duze">Duže od 24h</label>
                     </div>
-                    <svg style={{border:'1px solid grey',margin:'1px',background:'lightGray',borderRadius:'2px'}} onClick={init} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
+                    <svg style={{ border: '1px solid grey', margin: '1px', background: 'lightGray', borderRadius: '2px' }} onClick={init} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z" /></svg>
                 </div>
-                <div className='skrol'>
-                    {pretraga.length < 3 && duzeOd24.svi && vozila.map((u, index) => {
-                        if (vozila.length === index + 1) {
-                            return <div ref={lastElement} key={u.unit.id}>
-                                <ElementListe vozila={vozila} setVozila={setVozila} vozilo={u.unit} bazaInfo={u.bazaInfo}/>
-                            </div>
-                        } else {
-                            return <div key={u.unit.id}>
-                                <ElementListe vozila={vozila} setVozila={setVozila} vozilo={u.unit} bazaInfo={u.bazaInfo}/>
-                            </div>
-                        }
-                    })}
-                    {pretraga.length >= 3 && filtriranaVozila.map((u, index) => {
-                        return <div key={u.unit.id}>
-                            <ElementListe vozila={filtriranaVozila} setVozila={setFiltriranaVozila} vozilo={u.unit} bazaInfo={u.bazaInfo}/>
-                        </div>
-                    })}
-                    {duzeOd24.duze && vozila24.map((u, index) => {
-                        if (vozila24.length === index + 1) {
-                            return <div ref={lastElement24} key={u.unit.id}>
-                                <ElementListe vozila={vozila24} setVozila={setVozila24} vozilo={u.unit} bazaInfo={u.bazaInfo}/>
-                            </div>
-                        } else {
-                            return <div key={u.unit.id}>
-                                <ElementListe vozila={vozila24} setVozila={setVozila24} vozilo={u.unit} bazaInfo={u.bazaInfo}/>
-                            </div>
-                        }
-                    })}
+                <div>
+                    <List
+                        height={800}
+                        itemCount={filter.length}
+                        itemSize={80}
+                        width={400}
+                    >
+                        {Row}
+                    </List>
                 </div>
-            </div>}     
-              </div>
+            </div>}
+        </div>
     );
 }
 
