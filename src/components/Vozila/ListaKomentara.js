@@ -7,8 +7,8 @@ const ListaKomentara = ({
   setVozila,
   info,
   setBazaInfoNew,
-  bazaInfo,
   vozilo,
+  init,
 }) => {
   ///////////////////////////////
   const { korisnik, url } = useContext(TContext);
@@ -48,11 +48,15 @@ const ListaKomentara = ({
         },
       })
     ).json();
-    const proveraBazaInfoNew = await GetInfoVozilo(vozilo);
+    const proveraBazaInfoNew = await GetInfoVozilo(vozilo.id);
     setBazaInfoNew(proveraBazaInfoNew);
-    if (!proveraBazaInfoNew.length && bazaInfo.length) {
-      await OsveziElementBaze(vozilo, vozila);
+    if (
+      !proveraBazaInfoNew.length
+      // && bazaInfo.length
+    ) {
+      await OsveziElementBaze(vozilo.id, vozila);
       setVozila([...vozila]);
+      init();
     }
   };
   useEffect(() => {

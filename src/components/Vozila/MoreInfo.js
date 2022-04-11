@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import HelperFuntion from '../../helper/HelperFunction';
 import { TContext } from '../context';
 import ListaKomentara from './ListaKomentara';
+import { ListaTrajnih } from './ListaTrajnih';
 
 const MoreInfo = ({
   vozila,
@@ -27,12 +28,14 @@ const MoreInfo = ({
   setBazaInfoNew,
   broj,
   granica,
+  setSvaInfoVozila,
+  init,
 }) => {
   //////////////////////////////
   const { korisnik, url } = useContext(TContext);
   const [korisnikValue, setKorisnikValue] = korisnik;
   /////////////////////////////
-  const { Boje, GetInfoVozilo } = HelperFuntion();
+  const { Boje, GetInfoVozilo, VratiSveInfoVozilo } = HelperFuntion();
   const [bojaSelecta, setBojaSelecta] = useState('DEFAULT');
   const [komentar, setKomentar] = useState('');
 
@@ -62,15 +65,20 @@ const MoreInfo = ({
     ).json();
     setKomentar('');
     setBojaSelecta('DEFAULT');
-    setBazaInfoNew(await GetInfoVozilo(vozilo));
+    setBazaInfoNew(await GetInfoVozilo(idVozilo));
+    setSvaInfoVozila(await VratiSveInfoVozilo());
   };
   return (
-    <div style={{...ObojRed,position:'absolute',zIndex:1}} className='more-info'>
+    <div
+      style={{ ...ObojRed, position: 'absolute', zIndex: 1, width: '99%' }}
+      className='more-info'
+    >
       {granica ? <h4>Prelazak granice</h4> : null}
       <div>
         {vreme} ({razlika})
       </div>
       <div>{lokacija}</div>
+      <ListaTrajnih idVozilo={idVozilo} />
       <table style={{ background: '#FAF9F6', marginTop: '-0.5px' }}>
         <tbody>
           <tr>
@@ -288,6 +296,8 @@ const MoreInfo = ({
                 setBazaInfoNew={setBazaInfoNew}
                 bazaInfo={bazaInfo}
                 vozilo={vozilo}
+                setSvaInfoVozila={setSvaInfoVozila}
+                init={init}
               />
             ))}
         </tbody>

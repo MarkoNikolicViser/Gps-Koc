@@ -9,13 +9,22 @@ import { TContext } from '../context';
 function msg(msg) {
   console.log(msg);
 }
-const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
+const ElementListe = ({
+  vozila,
+  setVozila,
+  vozilo,
+  bazaInfo,
+  svaInfoVozila,
+  setSvaInfoVozila,
+  init,
+}) => {
   //////////////////////////////////////////////
   const { voziloInfo } = useContext(TContext);
   const [voziloInfoValue, setVoziloInfoValue] = voziloInfo;
   ///////////////////////////////////////////////
   const [moreInfo, setMoreInfo] = useState(false);
-  const { IspisiRazlikuNejavljanja, GetInfoVozilo, Boje, checkNested } = HelperFuntion();
+  const { IspisiRazlikuNejavljanja, GetInfoVozilo, Boje, checkNested } =
+    HelperFuntion();
   const [lokacija2, setLokacija2] = useState('');
   const [nazivUredjaja, setNazivUredjaja] = useState('');
   const [granica, setGranica] = useState(false);
@@ -36,21 +45,28 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
       }
     );
   };
+  const filterPoVozilu = svaInfoVozila.filter(m => m.idVozilo == vozilo.id);
   const ObojRed = () => {
     if (
-      //bazaInfo.length <= 0 && 
-      bazaInfoNew.length <= 0)
+      //bazaInfo.length <= 0 &&
+      filterPoVozilu.length <= 0
+    )
       return { background: '#FAF9F6' };
     let id;
-    if (bazaInfoNew.length > 0) id = bazaInfoNew[bazaInfoNew.length - 1].boja;
+    if (bazaInfoNew.length > 0)
+      id = filterPoVozilu[filterPoVozilu.length - 1].boja;
     else {
-      id = bazaInfo[bazaInfo.length - 1].boja;
+      id = filterPoVozilu[filterPoVozilu.length - 1].boja;
     }
     return Boje(id);
   };
 
   const MoreInfoFunkcija = async () => {
-    Lokacija(vozilo.raw.getPosition().x, vozilo.raw.getPosition().y);
+    if (checkNested(vozilo.raw, '$$user_lastMessage', 'pos', 'x'))
+      Lokacija(
+        vozilo.raw.$$user_lastMessage.pos.x,
+        vozilo.raw.$$user_lastMessage.pos.y
+      );
     setMoreInfo(prev => (prev = !prev));
     Senzori();
     setBazaInfoNew(await GetInfoVozilo(vozilo.id));
@@ -105,25 +121,27 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
     setSenzori(senzori);
   };
   const NameClick = callback => {
-    Lokacija(vozilo.raw.getPosition().x, vozilo.raw.getPosition().y);
+    if (!checkNested(vozilo.raw, '$$user_lastMessage', 'pos', 'x')) return;
+    Lokacija(
+      vozilo.raw.$$user_lastMessage.pos.x,
+      vozilo.raw.$$user_lastMessage.pos.y
+    );
 
     callback(
       prev =>
-      (prev = {
-        x: vozilo.raw.getPosition().x,
-        y: vozilo.raw.getPosition().y,
-        ikonica: vozilo.raw.getIconUrl(),
-        tablice: `${vozilo.name} "${lokacija2 ? lokacija2 : '...'}"`,
-      })
+        (prev = {
+          x: vozilo.raw.getPosition().x,
+          y: vozilo.raw.getPosition().y,
+          ikonica: vozilo.raw.getIconUrl(),
+          tablice: `${vozilo.name} "${lokacija2 ? lokacija2 : '...'}"`,
+        })
     );
   };
   return (
     <>
       {vozilo && (
         <div>
-          <div
-            // style={ObojRed()}
-            className='row'>
+          <div style={ObojRed()} className='row'>
             <img
               onClick={MoreInfoFunkcija}
               src={vozilo.raw.getIconUrl()}
@@ -151,8 +169,11 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
               </div>
               <div>
                 {
-                  IspisiRazlikuNejavljanja(checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null)
-                    .vreme
+                  IspisiRazlikuNejavljanja(
+                    checkNested(vozilo.raw, '$$user_lastMessage', 't')
+                      ? vozilo.raw.$$user_lastMessage.t
+                      : null
+                  ).vreme
                 }
               </div>
               <div></div>
@@ -166,8 +187,9 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 marginLeft: '3px',
               }}
             >
-              { checkNested(vozilo.raw, '$$user_position', 'sc')&&(vozilo.raw.$$user_position.sc !== 255 ||
-              vozilo.raw.$$user_position.sc) ? (
+              {checkNested(vozilo.raw, '$$user_position', 'sc') &&
+              (vozilo.raw.$$user_position.sc !== 255 ||
+                vozilo.raw.$$user_position.sc) ? (
                 <svg
                   style={{ fill: 'green', width: '17px' }}
                   xmlns='http://www.w3.org/2000/svg'
@@ -250,7 +272,12 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 {Senzor('Brzina') != 'N/A' ? (
                   <h5>{(Senzor('Brzina') * 10) / 10} km/h</h5>
                 ) : (
-                  <h5>{checkNested(vozilo.raw, '$$user_position', 's')?vozilo.raw.$$user_position.s.toFixed(0):'...'} km/h</h5>
+                  <h5>
+                    {checkNested(vozilo.raw, '$$user_position', 's')
+                      ? vozilo.raw.$$user_position.s.toFixed(0)
+                      : '...'}{' '}
+                    km/h
+                  </h5>
                 )}
               </div>
             </div>
@@ -260,7 +287,9 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
                 width: '3%',
                 height: '100%',
                 background: IspisiRazlikuNejavljanja(
-                  checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null
+                  checkNested(vozilo.raw, '$$user_lastMessage', 't')
+                    ? vozilo.raw.$$user_lastMessage.t
+                    : null
                 ).boja,
               }}
             ></div>
@@ -269,18 +298,35 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
             <MoreInfo
               lokacija={lokacija2}
               razlika={
-                checkNested(vozilo.raw, '$$user_lastMessage', 't') ? IspisiRazlikuNejavljanja(vozilo.raw.$$user_lastMessage.t).vreme : null
+                checkNested(vozilo.raw, '$$user_lastMessage', 't')
+                  ? IspisiRazlikuNejavljanja(vozilo.raw.$$user_lastMessage.t)
+                      .vreme
+                  : null
               }
               vreme={wialon.util.DateTime.formatTime(
-                checkNested(vozilo.raw, '$$user_lastMessage', 't') ? vozilo.raw.$$user_lastMessage.t : null,
+                checkNested(vozilo.raw, '$$user_lastMessage', 't')
+                  ? vozilo.raw.$$user_lastMessage.t
+                  : null,
                 0
               )}
-              x={vozilo.raw.getPosition().x}
-              y={vozilo.raw.getPosition().y}
-              sateliti={vozilo.raw.$$user_position.sc}
+              x={
+                checkNested(vozilo.raw, '$$user_lastMessage', 'pos', 'x') &&
+                vozilo.raw.getPosition().x
+              }
+              y={
+                checkNested(vozilo.raw, '$$user_lastMessage', 'pos', 'y') &&
+                vozilo.raw.getPosition().y
+              }
+              sateliti={
+                checkNested(vozilo.raw, '$$user_position', 'sc') &&
+                vozilo.raw.$$user_position.sc
+              }
               unit={vozilo.raw}
               brzinaCan={Senzor('Brzina')}
-              brzina={vozilo.raw.$$user_position.s}
+              brzina={
+                checkNested(vozilo.raw, '$$user_position', 's') &&
+                vozilo.raw.$$user_position.s
+              }
               kilometrazaCan={Senzor('Kilometraža')}
               kilometraza={vozilo.raw.$$user_mileageCounter}
               senzori={senzori}
@@ -296,6 +342,8 @@ const ElementListe = ({ vozila, setVozila, vozilo, bazaInfo }) => {
               vozilo={vozilo}
               vozila={vozila}
               setVozila={setVozila}
+              setSvaInfoVozila={setSvaInfoVozila}
+              init={init}
             />
           ) : null}
         </div>

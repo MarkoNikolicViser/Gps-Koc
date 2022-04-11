@@ -1,6 +1,6 @@
 const HelperFuntion = () => {
   const url = 'https://mvps.almaks.rs:3001/';
-  //const url = 'http://localhost:3004/'
+  //const url = 'http://192.168.0.205:3001/';
   const DanUNedelji = index => {
     switch (true) {
       case index == 0:
@@ -28,7 +28,7 @@ const HelperFuntion = () => {
   };
   function checkNested(obj) {
     var args = Array.prototype.slice.call(arguments, 1);
-  
+
     for (var i = 0; i < args.length; i++) {
       if (!obj || !obj.hasOwnProperty(args[i])) {
         return false;
@@ -37,7 +37,7 @@ const HelperFuntion = () => {
     }
     return true;
   }
-  
+
   const MesecUGodini = index => {
     switch (true) {
       case index == 1:
@@ -94,7 +94,7 @@ const HelperFuntion = () => {
 
   const IspisiRazlikuNejavljanja = vreme => {
     const razlika = KonverterVremena(vreme);
-    if(vreme==null){
+    if (vreme == null) {
       return {
         vreme: `...`,
         boja: 'red',
@@ -182,7 +182,7 @@ const HelperFuntion = () => {
     let niz = vozila; //mogla je ona da osvezava stejt kroz celu aplikaciju, ali je ovako odradjeno zbog brzine
     const noviInfo = await GetInfoVozilo(vozilo);
     for (let i = 0; i < niz.length; i++) {
-      if (niz[i].unit.id === vozilo.raw.getId())
+      if (niz[i].unit.id === vozilo)
         niz[i] = { unit: niz[i].unit, bazaInfo: noviInfo };
     }
   };
@@ -411,6 +411,56 @@ const HelperFuntion = () => {
       alert(err);
     }
   };
+  const VratiSveInfoVozilo = async () => {
+    try {
+      const data = await (await fetch(`${url}getall/vozila`)).json();
+      return data;
+    } catch (err) {
+      alert(err);
+    }
+  };
+  const InsertTrajniInfo = async (idVozilo, info) => {
+    const parametri = { idVozilo: idVozilo, info: info };
+    const data = await (
+      await fetch(`${url}trajna/insert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(parametri),
+      })
+    ).json();
+    if (data.message.errno == 1062) {
+      alert('Ova firma već postoji');
+    }
+  };
+  const DeleteTrajniInfo = async (trajna, id) => {
+    let result = window.confirm(
+      `Da li želite da obrišete trajnu informaciju ${trajna}?`
+    );
+    if (!result) return null;
+    const data = await (
+      await fetch(`${url}trajna/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    ).json();
+  };
+  const GetTrajniInfo = async idVozilo => {
+    const parametri = { idVozilo: idVozilo };
+    const data = await (
+      await fetch(`${url}trajna/get`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(parametri),
+      })
+    ).json();
+    return data;
+  };
 
   return {
     IspisiRazlikuNejavljanja,
@@ -439,7 +489,11 @@ const HelperFuntion = () => {
     DodajNuluJEdnocifrenomBroju,
     KonverzijaVremenaObuka,
     ProveraObuke,
-    checkNested
+    checkNested,
+    VratiSveInfoVozilo,
+    InsertTrajniInfo,
+    GetTrajniInfo,
+    DeleteTrajniInfo,
   };
 };
 export default HelperFuntion;
