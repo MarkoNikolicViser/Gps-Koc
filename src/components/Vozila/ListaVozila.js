@@ -209,6 +209,7 @@ const ListaVozila = () => {
             </div> */}
             <div>
               <input
+                checked={checkNikad}
                 type='checkbox'
                 onChange={NikadSeNisuJaviliFilter}
                 name='nikad'
