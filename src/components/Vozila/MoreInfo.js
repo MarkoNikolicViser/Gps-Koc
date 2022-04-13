@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import HelperFuntion from '../../helper/HelperFunction';
 import { TContext } from '../context';
 import ListaKomentara from './ListaKomentara';
@@ -276,15 +276,17 @@ const MoreInfo = ({
           textAlign: 'center',
         }}
       >
-        <thead>
-          <tr>
-            <th>Komentar</th>
-            <th>Korisnik</th>
-            <th>Datum</th>
-            {/* <th>Edit</th> */}
-            <th>Delete</th>
-          </tr>
-        </thead>
+        {bazaInfoNew.length > 0 ? (
+          <thead>
+            <tr>
+              <th>Komentar</th>
+              <th>Korisnik</th>
+              <th>Datum</th>
+              {/* <th>Edit</th> */}
+              <th>Delete</th>
+            </tr>
+          </thead>
+        ) : null}
         <tbody>
           {bazaInfoNew.length > 0 &&
             bazaInfoNew.map((m, index) => (

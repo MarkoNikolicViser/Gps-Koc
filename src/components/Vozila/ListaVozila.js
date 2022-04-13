@@ -4,8 +4,12 @@ import HelperFuntion from '../../helper/HelperFunction';
 import { LoaderCustom } from '../LoaderCustom';
 import { TContext } from '../context';
 import { FixedSizeList as List } from 'react-window';
+import RSC from 'react-scrollbars-custom';
 
 /* global wialon */
+
+const listRef = React.createRef();
+const outerRef = React.createRef();
 
 // utills function
 function msg(msg) {
@@ -146,6 +150,21 @@ const ListaVozila = () => {
       init();
     }
   };
+  const ScrollTo24 = () => {
+    let indexNiz = 0;
+    const date = (new Date() / 1000) | 0;
+    const razlika = 86400;
+    for (let i = 0; i < svaVozila.length; i++) {
+      if (!checkNested(svaVozila[i].unit.raw, '$$user_lastMessage', 't'))
+        console.log('-');
+      else if (date - svaVozila[i].unit.raw.$$user_lastMessage.t < razlika) {
+        //console.log(svaInfoVozila[i]);
+        indexNiz = i;
+        break;
+      }
+    }
+    listRef.current.scrollToItem(indexNiz);
+  };
 
   const Row = useCallback(({ index, style }) => {
     const { unit } = filter[index] || {};
@@ -194,19 +213,6 @@ const ListaVozila = () => {
               justifyContent: 'space-evenly',
             }}
           >
-            {/* <div>
-              <input
-                checked={duzeOd24.svi}
-                onChange={() => {
-                  setDuzeOd24(prev => (prev = { svi: true, duze: false }));
-                  setPretraga(prev => (prev = ''));
-                }}
-                type='radio'
-                name='Svi'
-                id=''
-              />
-              <label htmlFor='svi'>Svi</label>
-            </div> */}
             <div>
               <input
                 checked={checkNikad}
@@ -216,19 +222,10 @@ const ListaVozila = () => {
               />
               <label htmlFor='nikad'>Nikad se nisu javili</label>
             </div>
-            {/* <div>
-              <input
-                checked={duzeOd24.duze}
-                type='radio'
-                onChange={() => {
-                  setDuzeOd24(prev => (prev = { svi: false, duze: true }));
-                  setPretraga(prev => (prev = ''));
-                }}
-                name='duze'
-                id=''
-              />
-              <label htmlFor='duze'>Duže od 24h</label>
-            </div> */}
+            <div>
+              <button onClick={ScrollTo24}>Scroll to 24h</button>
+            </div>
+
             <svg
               style={{
                 border: '1px solid grey',
@@ -237,7 +234,7 @@ const ListaVozila = () => {
                 borderRadius: '2px',
               }}
               onClick={() => {
-                setCheckedNikad(prev => (prev = !prev));
+                setCheckedNikad(true);
                 init();
               }}
               xmlns='http://www.w3.org/2000/svg'
@@ -250,10 +247,22 @@ const ListaVozila = () => {
           </div>
           <div>
             <List
+              ref={listRef}
               height={window.innerHeight - 45}
               itemCount={filter.length}
               itemSize={80}
               width={400}
+              outerElementType={CustomScrollbarsVirtualList}
+              outerRef={outerRef}
+              onScroll={({ scrollOffset, scrollUpdateWasRequested }) => {
+                if (scrollUpdateWasRequested) {
+                  console.log(
+                    'TODO: check scroll position',
+                    scrollOffset,
+                    outerRef.current.scrollHeight
+                  );
+                }
+              }}
             >
               {Row}
             </List>
@@ -263,5 +272,44 @@ const ListaVozila = () => {
     </div>
   );
 };
+const CustomScrollbars = ({
+  children,
+  forwardedRef,
+  onScroll,
+  style,
+  className,
+}) => {
+  return (
+    <RSC
+      className={className}
+      style={style}
+      scrollerProps={{
+        renderer: props => {
+          const { elementRef, onScroll: rscOnScroll, ...restProps } = props;
+
+          return (
+            <span
+              {...restProps}
+              onScroll={e => {
+                onScroll(e);
+                rscOnScroll(e);
+              }}
+              ref={ref => {
+                forwardedRef(ref);
+                elementRef(ref);
+              }}
+            />
+          );
+        },
+      }}
+    >
+      {children}
+    </RSC>
+  );
+};
+
+const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
+  <CustomScrollbars {...props} forwardedRef={ref} />
+));
 
 export default React.memo(ListaVozila);

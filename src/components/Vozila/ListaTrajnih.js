@@ -25,10 +25,16 @@ export const ListaTrajnih = ({ idVozilo }) => {
 
   return (
     <div
-      style={{ maxHeight: '100px', overflowY: 'scroll', marginBottom: '10px' }}
+      style={{
+        maxHeight: '100px',
+        overflowY: 'scroll',
+        marginBottom: '10px',
+        border: '2px solid black',
+        boxShadow: '4px 4px 4px 4px #888888',
+      }}
     >
       <table>
-        <thead>
+        <thead style={{ fontSize: '10px' }}>
           <tr>
             <th>
               <input

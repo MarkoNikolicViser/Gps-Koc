@@ -9,14 +9,20 @@ const ListaKomentara = ({
   setBazaInfoNew,
   vozilo,
   init,
+  setSvaInfoVozila,
 }) => {
   ///////////////////////////////
   const { korisnik, url } = useContext(TContext);
   const [korisnikValue, setKorisnikValue] = korisnik;
   //////////////////////////////
 
-  const { Boje, GetInfoVozilo, OsveziElementBaze, KonverterVremenaIzBaze } =
-    HelperFuntion();
+  const {
+    Boje,
+    GetInfoVozilo,
+    OsveziElementBaze,
+    KonverterVremenaIzBaze,
+    VratiSveInfoVozilo,
+  } = HelperFuntion();
 
   const [vlasnikKomentara, setVlasnikKomentara] = useState('');
 
@@ -49,18 +55,26 @@ const ListaKomentara = ({
       })
     ).json();
     const proveraBazaInfoNew = await GetInfoVozilo(vozilo.id);
-    setBazaInfoNew(proveraBazaInfoNew);
-    if (
-      !proveraBazaInfoNew.length
-      // && bazaInfo.length
-    ) {
-      await OsveziElementBaze(vozilo.id, vozila);
-      setVozila([...vozila]);
-      init();
-    }
+    // setBazaInfoNew(proveraBazaInfoNew);
+    // if (
+    //   !proveraBazaInfoNew.length
+    //   // && bazaInfo.length
+    // ) {
+    //   await OsveziElementBaze(vozilo.id, vozila);
+    //    setVozila([...vozila]);
+    //   setSvaInfoVozila(await VratiSveInfoVozilo());
+    // }
+    //await OsveziElementBaze(vozilo.id, vozila);
+    //setVozila([...vozila]);
+    setSvaInfoVozila(await VratiSveInfoVozilo());
   };
   useEffect(() => {
-    VratiVlasnikaKomentara();
+    let cleanUp = true;
+    if (cleanUp) VratiVlasnikaKomentara();
+    return () => {
+      cleanUp = false;
+      setVlasnikKomentara('');
+    };
   }, []);
   return (
     <tr style={{ ...Boje(info.boja), overflowWrap: 'anywhere' }}>
