@@ -1,6 +1,6 @@
 const HelperFuntion = () => {
-  //const url = 'https://mvps.almaks.rs:3001/';
-  const url = 'http://192.168.0.205:3001/';
+  const url = 'https://mvps.almaks.rs:3001/';
+  // const url = 'http://192.168.0.205:3001/';
   const DanUNedelji = index => {
     switch (true) {
       case index == 0:

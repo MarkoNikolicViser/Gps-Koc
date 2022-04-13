@@ -3,8 +3,8 @@ import React, { createContext, useState } from 'react';
 export const TContext = createContext();
 
 export const TProvider = props => {
-  //const url = 'https://mvps.almaks.rs:3001/';
-  const url = 'http://192.168.0.205:3001/';
+  const url = 'https://mvps.almaks.rs:3001/';
+  //const url = 'http://192.168.0.205:3001/';
 
   const [svaVozilaC, setSvaVozilaC] = useState([]);
   const [komentari, setKomentari] = useState([
