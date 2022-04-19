@@ -1,7 +1,7 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import {TContext} from '../context'
+import { TContext } from '../context'
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -48,20 +48,20 @@ const NizElemenata = ({ niz, counter }) => {
 
 
     return <div style={counter == 1 ? { background: '#FF7F7F' } : counter == 2 ? { background: '#fdfd66' } : counter == 3 ? { background: '#cf9fe5' } : counter == 4 ? { background: '#90ee90' } : { background: '#a9a9a9' }}>
-        {niz.length?<div style={{ height: '100%', overflowY: 'scroll' }}>
+        {niz.length ? <div style={{ height: '100%', overflowY: 'scroll' }}>
             {niz.length > 0 ?
                 niz.map((m, index) => (
-                    <Element key={index} index={index} element={m}/>
+                    <Element key={index} index={index} element={m} />
                 )) : null}
-        </div>:null}
+        </div> : null}
     </div>
 }
-const Element = ({index,element}) => {
-    const {svaVozilaC}=useContext(TContext)
-    const [svaVozilaCValue,setSvaVozilaCValue]=svaVozilaC
+const Element = ({ index, element }) => {
+    const { svaVozilaC } = useContext(TContext)
+    const [svaVozilaCValue, setSvaVozilaCValue] = svaVozilaC
     const [hover, setHover] = useState(false)
 
-    const filter=svaVozilaCValue.filter(a=>a.id==element.idVozilo)
+    const filter = svaVozilaCValue.filter(a => a.unit.id == element.idVozilo)
 
     return <div style={{ display: 'flex', flexDirection: 'column', minWidth: '150px', border: '1px solid gray', marginBottom: '1px' }}>
         {!hover ? <div onMouseOver={() => setHover(prev => prev = !prev)} style={{ display: 'flex' }}>
@@ -69,7 +69,7 @@ const Element = ({index,element}) => {
             <h1 style={{ fontWeight: '500' }}>{element.komentar}</h1>
         </div> :
             <div onMouseLeave={() => setHover(prev => prev = !prev)} style={{ background: 'white' }}>
-                <h1 style={{ fontWeight: '500' }}>{filter[0].name}</h1>
+                <h1 style={{ fontWeight: '500' }}>{filter[0].unit.name}</h1>
             </div>
         }
     </div>

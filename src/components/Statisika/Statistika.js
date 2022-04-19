@@ -15,8 +15,11 @@ export const Statistika = () => {
         mesec: date.getFullYear() + '-' + DodajNuluJEdnocifrenomBroju(parseInt(date.getMonth()) + 1)
     })
     useEffect(() => {
+        let cleanUp=true
         const Funkcija = async () => setUsers(await VratiSveUsere())
+        if(cleanUp)
         Funkcija()
+        return ()=>{cleanUp=false;setUsers([])}
     }, [])
 
     return (

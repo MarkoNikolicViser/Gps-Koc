@@ -8,8 +8,11 @@ const Kontakti = () => {
     const [data, setData] = useState([])
     const { GetAllFirmeIKontakte } = HelperFuntion()
     useEffect(() => {
+        let cleanUp=true
         const Funkcija = async () => setData(await GetAllFirmeIKontakte())
+        if(cleanUp)
         Funkcija()
+        return()=>{cleanUp=false;setData([])}
     }, []);
     //&&legend[0].broj.includes(pretragaLegende)
     const FilterFirme = data.filter(legend => {

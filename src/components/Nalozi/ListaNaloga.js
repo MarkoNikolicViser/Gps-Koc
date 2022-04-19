@@ -8,8 +8,11 @@ export const ListaNaloga = () => {
     const [pretraga, setPretraga] = useState('')
     const { GetAllFirmeINaloge } = HelperFuntion()
     useEffect(() => {
+        let cleanUp=true
         const Funkcija = async () => setData(await GetAllFirmeINaloge())
+        if(cleanUp)
         Funkcija()
+        return ()=>{cleanUp=false;setData([])}
     }, []);
 
     const FilterFirme = data.filter(legend => {

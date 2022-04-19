@@ -45,7 +45,7 @@ export const options = {
 export const ChartStatistikaBar = ({ opcija, datum, user }) => {
 
     const { VratiKomentarePoDanuIkorisniku, DanUNedelji, MesecUGodini } = HelperFuntion()
-    const [dataBaza, setDataBaza] = useState([{chart:[],data:[]},{chart:[],data:[]},{chart:[],data:[]},{chart:[],data:[]},{chart:[],data:[]}])
+    const [dataBaza, setDataBaza] = useState([{ chart: [], data: [] }, { chart: [], data: [] }, { chart: [], data: [] }, { chart: [], data: [] }, { chart: [], data: [] }])
     const [labelFilter, setLabelFilter] = useState({ sedmica: [], mesec: [], godina: [] })
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export const ChartStatistikaBar = ({ opcija, datum, user }) => {
         // setLabelFilter({...labelFilter,sedmica:nizSedmica.reverse()})
         let nizMesec = []
         const date2 = new Date(datum.dan)
-         date2.setDate(date2.getDate() + 1)
+        date2.setDate(date2.getDate() + 1)
         for (let i = 0; i < 31; i++) {
             date2.setDate(date2.getDate() - 1)
             nizMesec.push(`${date2.getDate()}.${date2.getMonth() + 1}`)
@@ -75,14 +75,18 @@ export const ChartStatistikaBar = ({ opcija, datum, user }) => {
     }, [datum])
 
     useEffect(() => {
+        //let cleanUp = true
+        // if (cleanUp)
         (async () => {
             let niz = []
             for (let i = 1; i < 6; i++) {
-                let data = await VratiKomentarePoDanuIkorisniku(opcija == 1 ? 'dan' : opcija == 2 ? 'sedmica' : opcija == 3 ? 'mesec' : 'godina', opcija!=4?datum.dan:datum.mesec, user, i)
+                let data = await VratiKomentarePoDanuIkorisniku(opcija == 1 ? 'dan' : opcija == 2 ? 'sedmica' : opcija == 3 ? 'mesec' : 'godina', opcija != 4 ? datum.dan : datum.mesec, user, i)
+                console.log(data)
                 niz.push(data)
             }
             setDataBaza(niz)
         })()
+        //return () => { cleanUp = false; setDataBaza([]) }
     }, [datum, user, opcija])
 
     const labels = opcija == 4 ? labelFilter.godina

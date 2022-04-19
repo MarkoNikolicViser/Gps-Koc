@@ -10,10 +10,13 @@ const Legenda = () => {
     const [novaInfo,setNovaInfo]=useState({naziv:'',lokacija:''})
 
     useEffect(() => {
+        let cleanUp=true
         const Funkcija = async () => {
             setSveFirme(await GetAllFirmeILokacije())
         }
+        if(cleanUp)
         Funkcija()
+        return()=>{cleanUp=false;setSveFirme([])}
     }, [])
     const InsertFirma=async(e)=>{
         e.preventDefault()

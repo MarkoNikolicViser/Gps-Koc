@@ -131,6 +131,7 @@ const ListaVozila = () => {
         });
 
         setSvaVozila(res);
+        setSvaVozilaCValue(res)
         setSvaInfoVozila(await VratiSveInfoVozilo());
         setLoading(false);
       }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {  useState, useContext } from 'react';
 import MoreInfo from './MoreInfo';
 import HelperFuntion from '../../helper/HelperFunction';
 import { TContext } from '../context';

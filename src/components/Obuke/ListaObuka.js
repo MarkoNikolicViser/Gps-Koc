@@ -8,6 +8,7 @@ export const ListaObuka = () => {
     const [obuke, setObuke] = useState([])
     const [pretraga, setPretraga] = useState('')
     useEffect(() => {
+        let cleanUp=true
         const Funkcija = async () => {
             const data = await GetAllFirmeIKontakte()
             data.sort((a, b) => {
@@ -15,7 +16,9 @@ export const ListaObuka = () => {
             });
             setObuke(data)
         }
+        if(cleanUp)
         Funkcija()
+        return ()=>{cleanUp=false;setObuke([])}
     }, [])
     const FilterFirme = obuke.filter(legend => {
         return legend[0].naziv.toLowerCase().includes(pretraga.toLowerCase())

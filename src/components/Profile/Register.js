@@ -43,7 +43,10 @@ const Register = () => {
         setNalozi(data)
     }
     useEffect(() => {
+        let cleanUp=true
+        if(cleanUp)
         FetchNaloge()
+        return()=>{cleanUp=false;setNalozi([])}
     }, [])
     const PosaljiUpit = async (e) => {
         e.preventDefault()
